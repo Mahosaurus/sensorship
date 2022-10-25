@@ -9,13 +9,19 @@ from flask import Flask, Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 
+from tempsensor import get_data
+
 def get_sensor_data() -> str:
     """ Sensor data retrieval """
-    with open("random_data.txt", "r", encoding="utf-8") as filehandle:
-        data = filehandle.read()
-    data = data.split("\n")
-    choice = random.choice(data)
-    return choice
+    mock = False
+    if mock: 
+        with open("random_data.txt", "r", encoding="utf-8") as filehandle:
+            data = filehandle.read()
+        data = data.split("\n")
+        temperature = random.choice(data)
+    else:
+        temperature, humidity = get_data()
+    return temperature
 
 def map_time_to_time_of_day(timestamp: str) -> str:
     """ Extract time of day from ts """
@@ -55,7 +61,7 @@ def create_figure():
     fig = Figure()
     axis = fig.add_subplot(1, 1, 1)
     ys = [int(val.split(",")[2]) for val in data] # Extract values
-    xs = [i for i in range(len(ys))] # Generic x-axis (should be timestamp)
+    xs = [i for i in range(len(ys))] # Generic x-axis (TODO: should be timestamp)
     axis.plot(xs, ys)
     return fig
 
@@ -67,7 +73,7 @@ def main():
         filehandle.write(out_str)
 
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(main, 'interval', seconds=1)
+sched.add_job(main, 'interval', seconds=5)
 sched.start()
 
 app = Flask(__name__)
