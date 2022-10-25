@@ -1,0 +1,1 @@
+sudo ./install_pyenv.sh
