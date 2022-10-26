@@ -7,7 +7,7 @@ name: Build and deploy Python app to Azure Web App - sensorndf
 on:
   push:
     branches:
-      - feature/code-improvements
+      - main
   workflow_dispatch:
 
 jobs:
