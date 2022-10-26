@@ -1,1 +1,1 @@
-sudo ./install_pyenv.sh
+sudo ./install_all.sh
