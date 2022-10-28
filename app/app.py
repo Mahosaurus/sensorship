@@ -38,7 +38,7 @@ def main():
         print(f"Error in sending metrics to App: {exc}")
 
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(main, 'interval', seconds=1)
+sched.add_job(main, 'interval', seconds=30)
 sched.start()
 
 app = Flask(__name__)
