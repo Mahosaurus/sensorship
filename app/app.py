@@ -1,5 +1,4 @@
 import io
-import json
 import os
 import time
 
@@ -12,7 +11,7 @@ import requests
 
 from graphics import create_figure
 from tempsensor import get_mock_data, get_sensor_data
-from utils import compile_data_point
+from helpers import compile_data_point
 
 def get_data() -> Tuple[str, str]:
     """ Data ingestion switch """
@@ -28,16 +27,15 @@ def main():
     current_ts = time.time()
     out_str = compile_data_point(current_ts, temperature, humidity)
     # Write metrics to file
-    with open("outcome.txt", "a", encoding="utf-8") as filehandle:
+    with open("outcome_local.txt", "a", encoding="utf-8") as filehandle:
         filehandle.write(out_str)
     # Try to send metrics to App
     try:
         dict_to_send = {"data": out_str}
-        res = requests.post(os.environ['LINK'], json=dict_to_send, verify=False)
+        res = requests.put(os.environ['LINK'], json=dict_to_send, verify=False)
         print(res, res.text)
     except Exception as exc:
         print(f"Error in sending metrics to App: {exc}")
-
 
 sched = BackgroundScheduler(daemon=True)
 sched.add_job(main, 'interval', seconds=1)

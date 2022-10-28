@@ -3,7 +3,7 @@ import matplotlib.ticker as mticker
 
 def create_figure():
     """ Creates figure from outcome.txt content """
-    with open("outcome_local.txt", "r", encoding="utf-8") as filehandle:
+    with open("outcome_remote.txt", "r", encoding="utf-8") as filehandle:
         data = filehandle.read()
     data = data.split("\n")[:-1]
 
