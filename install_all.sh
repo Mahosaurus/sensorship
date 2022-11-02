@@ -35,3 +35,6 @@ echo 'export LINK=https://sensorndf.azurewebsites.net/sensor-data' >> ${HOME}/.b
 # https://askubuntu.com/questions/121073/why-bash-profile-is-not-getting-sourced-when-opening-a-terminal
 echo ". ~/.bash_profile" >> ${HOME}/.bashrc
 pip install --no-cache-dir -r requirements.txt
+
+prog_sensor_path="$PWD"/app/main.py
+crontab -l > file; echo "@reboot $prog_sensor_path" >> file; crontab file; rm file
