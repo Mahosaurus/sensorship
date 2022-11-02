@@ -25,10 +25,10 @@ def get_sensor_data() -> Tuple[str, str]:
     data = i2cbus.read_i2c_block_data(address,0x71,7)
 
     temp_raw_value = ((data[3] & 0xf) << 16) + (data[4] << 8) + data[5]
-    temperature = round(200*float(temp_raw_value)/2**20 - 50)
+    temperature = round(200*float(temp_raw_value)/2**20 - 50, 2)
 
     humid_raw_value = ((data[3] & 0xf0) >> 4) + (data[1] << 12) + (data[2] << 4)
-    humidity = round(100*float(humid_raw_value)/2**20)
+    humidity = round(100*float(humid_raw_value)/2**20, 2)
 
     return str(temperature), str(humidity)
 
