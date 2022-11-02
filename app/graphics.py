@@ -8,8 +8,8 @@ def create_figure():
     data = data.split("\n")[:-1]
 
     timestamp = [val.split(",")[0] for val in data] # Extract values
-    temperature = [int(val.split(",")[2]) for val in data] # Extract values
-    humidity = [int(val.split(",")[3]) for val in data] # Extract values
+    temperature = [float(val.split(",")[2]) for val in data] # Extract values
+    humidity = [float(val.split(",")[3]) for val in data] # Extract values
 
     fig = Figure(figsize=(10, 8))
     xs = list(range(len(timestamp))) # Generic x-axis
