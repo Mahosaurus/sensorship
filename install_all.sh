@@ -37,5 +37,5 @@ echo 'export LINK=https://sensorndf.azurewebsites.net/sensor-data' >> ${HOME}/.b
 echo ". ~/.bash_profile" >> ${HOME}/.bashrc
 pip install --no-cache-dir -r requirements.txt
 
-prog_sensor_path="$PWD"/app/app.py
-crontab -l > file; echo "@reboot $prog_sensor_path" >> file; crontab file; rm file
+prog_sensor_path="$PWD"/run_sensor.sh
+crontab -l > file; echo "@reboot sudo bash $prog_sensor_path" >> file; crontab file; rm file
