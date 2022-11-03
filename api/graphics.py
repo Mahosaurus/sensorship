@@ -1,15 +1,21 @@
 from matplotlib.figure import Figure
-import matplotlib.ticker as mticker
 
-def create_figure():
-    """ Creates figure from outcome.txt content """
-    with open("outcome_remote.txt", "r", encoding="utf-8") as filehandle:
+def load_data(path):
+    with open(path, "r", encoding="utf-8") as filehandle:
         data = filehandle.read()
     data = data.split("\n")[:-1]
+    return data
 
+def parse_data(data):
     timestamp = [val.split(",")[0] for val in data] # Extract values
     temperature = [float(val.split(",")[2]) for val in data] # Extract values
     humidity = [float(val.split(",")[3]) for val in data] # Extract values
+    return timestamp, temperature, humidity
+
+def create_figure():
+    """ Creates figure from outcome.txt content """
+    data = load_data("outcome_remote.txt")
+    timestamp, temperature, humidity = parse_data(data)
 
     fig = Figure(figsize=(10, 8))
     xs = list(range(len(timestamp))) # Generic x-axis
