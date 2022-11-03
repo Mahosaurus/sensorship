@@ -21,15 +21,13 @@ def get_data() -> Tuple[str, str]:
     else:
         return get_sensor_data()
 
-def main():
-    """ Function that gets called by scheduler. """
-    temperature, humidity = get_data()
-    current_ts = time.time()
-    out_str = compile_data_point(current_ts, temperature, humidity)
-    # Write metrics to file
+def save_to_file(out_str):
+    """ Write metrics to file """
     with open("outcome_local.txt", "a", encoding="utf-8") as filehandle:
         filehandle.write(out_str)
-    # Try to send metrics to App
+
+def send_to_app(out_str):
+    """ Try to send metrics to App """
     try:
         dict_to_send = {"data": out_str}
         res = requests.put(os.environ['LINK'], json=dict_to_send, verify=False)
@@ -37,8 +35,16 @@ def main():
     except Exception as exc:
         print(f"Error in sending metrics to App: {exc}")
 
+def main():
+    """ Function that gets called by scheduler. """
+    temperature, humidity = get_data()
+    current_ts = time.time()
+    out_str = compile_data_point(current_ts, temperature, humidity)
+    save_to_file(out_str)
+    send_to_app(out_str)
+
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(main, 'interval', seconds=30)
+sched.add_job(main, 'interval', seconds=60)
 sched.start()
 
 app = Flask(__name__)
