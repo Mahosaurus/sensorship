@@ -44,7 +44,7 @@ def main():
     send_to_app(out_str)
 
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(main, 'interval', seconds=1)
+sched.add_job(main, 'interval', seconds=60)
 sched.start()
 
 app = Flask(__name__)
