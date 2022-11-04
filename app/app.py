@@ -15,7 +15,8 @@ from helpers import compile_data_point
 
 def get_data() -> Tuple[str, str]:
     """ Data ingestion switch """
-    mock_data = True # Mocks data to experiment with
+    # TODO: Automatic switch by config between envs
+    mock_data = False # Mocks data to experiment with
     if mock_data:
         return get_mock_data()
     else:
@@ -43,8 +44,9 @@ def main():
     save_to_file(out_str)
     send_to_app(out_str)
 
+main() # Call it once to test it works, even with long scheduler
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(main, 'interval', seconds=60)
+sched.add_job(main, 'interval', seconds=180)
 sched.start()
 
 app = Flask(__name__)
