@@ -13,11 +13,11 @@ from graphics import create_figure
 from tempsensor import get_mock_data, get_sensor_data
 from helpers import compile_data_point
 
+import config as cfg
+
 def get_data() -> Tuple[str, str]:
     """ Data ingestion switch """
-    # TODO: Automatic switch by config between envs
-    mock_data = False # Mocks data to experiment with
-    if mock_data:
+    if cfg.TEST_MODE:
         return get_mock_data()
     else:
         return get_sensor_data()
@@ -42,11 +42,13 @@ def main():
     current_ts = time.time()
     out_str = compile_data_point(current_ts, temperature, humidity)
     save_to_file(out_str)
-    send_to_app(out_str)
+    if not cfg.TEST_MODE:
+        send_to_app(out_str)
 
-main() # Call it once to test it works, even with long scheduler
+# Call it once to test it works, even with long scheduler
+main()
 sched = BackgroundScheduler(daemon=True)
-sched.add_job(main, 'interval', seconds=180)
+sched.add_job(main, 'interval', seconds=cfg.PERIOD)
 sched.start()
 
 app = Flask(__name__)

@@ -1,3 +1,5 @@
+import math
+
 from matplotlib.figure import Figure
 import matplotlib.dates as dates
 
@@ -21,27 +23,32 @@ def create_figure():
 
     fig = Figure(figsize=(10, 8))
 
-    temperature_axis = fig.add_subplot(2, 1, 1)    
+    temperature_axis = fig.add_subplot(2, 1, 1)
     temperature_axis.plot_date(idx, temperature,
                  linestyle="--", dash_joinstyle="bevel", color="salmon", linewidth=0.6,
-                 marker=".", markerfacecolor="maroon", markeredgewidth=0.3,
+                 markerfacecolor="maroon", markeredgewidth=0.3,
                  fillstyle="full")
     temperature_axis.set_title("Temperature", fontdict={"fontweight": "bold", "color": "darkblue"})
-    temperature_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=15))   # every 15 mins
+
+    interval = math.ceil(len(idx)/60/20)
+    temperature_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=interval))   # every x mins
     temperature_axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
+
     temperature_axis.xaxis.set_major_locator(dates.DayLocator(interval=1))    # every day
     temperature_axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y'))
 
     humidity_axis = fig.add_subplot(2, 1, 2)
     humidity_axis.plot_date(idx, humidity,
                  linestyle="--", dash_joinstyle="bevel", color="salmon", linewidth=0.6,
-                 marker=".", markerfacecolor="maroon", markeredgewidth=0.3,
+                 markerfacecolor="maroon", markeredgewidth=0.3,
                  fillstyle="full")
 
     humidity_axis.set_title("Humidity", fontdict={"fontweight": "bold", "color": "darkblue"})
-    humidity_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=15))   # every 15 mins
+    
+    interval = math.ceil(len(idx)/60/20)
+    humidity_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=interval))   # every x mins
     humidity_axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
+
     humidity_axis.xaxis.set_major_locator(dates.DayLocator(interval=1))    # every day
     humidity_axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y'))
     return fig
-
