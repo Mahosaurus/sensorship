@@ -21,14 +21,21 @@ def create_figure():
 
     fig = Figure(figsize=(10, 8))
 
-    temperature_axis = fig.add_subplot(2, 1, 1)    
+    temperature_axis = fig.add_subplot(2, 1, 1)
     temperature_axis.plot_date(idx, temperature,
                  linestyle="--", dash_joinstyle="bevel", color="salmon", linewidth=0.6,
                  marker=".", markerfacecolor="maroon", markeredgewidth=0.3,
                  fillstyle="full")
     temperature_axis.set_title("Temperature", fontdict={"fontweight": "bold", "color": "darkblue"})
-    temperature_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=15))   # every 15 mins
-    temperature_axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
+    if len(idx) < 10:
+        temperature_axis.xaxis.set_minor_locator(dates.SecondLocator(interval=15))   # every 15 seconds
+        temperature_axis.xaxis.set_minor_formatter(dates.DateFormatter('%M:%S'))  # hours and minutes
+    elif len(idx) < 30:
+        temperature_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=15))   # every 15 mins
+        temperature_axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
+    else:
+        temperature_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=60))   # every 60 mins
+        temperature_axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
     temperature_axis.xaxis.set_major_locator(dates.DayLocator(interval=1))    # every day
     temperature_axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y'))
 
@@ -39,8 +46,15 @@ def create_figure():
                  fillstyle="full")
 
     humidity_axis.set_title("Humidity", fontdict={"fontweight": "bold", "color": "darkblue"})
-    humidity_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=15))   # every 15 mins
-    humidity_axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
+    if len(idx) < 10:
+        humidity_axis.xaxis.set_minor_locator(dates.SecondLocator(interval=15))   # every 15 seconds
+        humidity_axis.xaxis.set_minor_formatter(dates.DateFormatter('%M:%S'))  # hours and minutes
+    elif len(idx) < 30:
+        humidity_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=15))   # every 15 mins
+        humidity_axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
+    else:
+        humidity_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=60))   # every 60 mins
+        humidity_axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
     humidity_axis.xaxis.set_major_locator(dates.DayLocator(interval=1))    # every day
     humidity_axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y'))
     return fig
