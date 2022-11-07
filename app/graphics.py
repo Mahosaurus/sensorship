@@ -1,8 +1,7 @@
+import datetime
 import math
 from matplotlib.figure import Figure
 import matplotlib.dates as dates
-
-import config as cfg
 
 def load_data(path):
     with open(path, "r", encoding="utf-8") as filehandle:
@@ -22,6 +21,12 @@ def create_figure():
     timestamp, temperature, humidity = parse_data(data)
     idx = [dates.datestr2num(idx) for idx in  timestamp]
 
+    # Determine interval
+    mini = datetime.datetime.strptime(min(timestamp), "%Y-%m-%d %H:%M:%S").timestamp()
+    maxi = datetime.datetime.strptime(max(timestamp), "%Y-%m-%d %H:%M:%S").timestamp()
+    time_diff_mins = (maxi-mini)/60
+    interval = math.ceil(time_diff_mins/16)
+
     fig = Figure(figsize=(10, 8))
 
     temperature_axis = fig.add_subplot(2, 1, 1)
@@ -31,7 +36,6 @@ def create_figure():
                  fillstyle="full")
     temperature_axis.set_title("Temperature", fontdict={"fontweight": "bold", "color": "darkblue"})
 
-    interval = math.ceil(len(idx)/60/20)
     temperature_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=interval))   # every x mins
     temperature_axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
 
@@ -45,8 +49,7 @@ def create_figure():
                  fillstyle="full")
 
     humidity_axis.set_title("Humidity", fontdict={"fontweight": "bold", "color": "darkblue"})
-    
-    interval = math.ceil(len(idx)/60/20)
+
     humidity_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=interval))   # every x mins
     humidity_axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
 
