@@ -15,10 +15,11 @@ def load_data(path):
 def parse_data(data):
     """ Parse date from sensor """
     timestamp = [val.split(",")[0] for val in data] # Extract values
+    time_of_day = [val.split(",")[1].strip() for val in data] # Extract values
     temperature = [float(val.split(",")[2]) for val in data] # Extract values
     rel_humidity = [float(val.split(",")[3]) for val in data] # Extract values
     abs_humidity = [humidity/(288.68 * (1.098 + temp/100)**8.02) for humidity, temp in zip (rel_humidity, temperature)]
-    return timestamp, temperature, rel_humidity, abs_humidity
+    return timestamp, time_of_day, temperature, rel_humidity, abs_humidity
 
 def determine_x_axis_interval(timestamp):
     """ Determine the interval to be 16 steps """
@@ -31,20 +32,25 @@ def determine_x_axis_interval(timestamp):
 def create_figure():
     """ Creates figure from outcome.txt content """
     data = load_data(INPUT_PATH)
-    timestamp, temperature, rel_humidity, abs_humidity = parse_data(data)
-    idx = [dates.datestr2num(idx) for idx in timestamp]
-
+    timestamp, time_of_day, temperature, rel_humidity, abs_humidity = parse_data(data)
+    idx = [dates.datestr2num(idx) for idx in timestamp] # Conversion to proper timestamp
+    colormap = {'Night': 'black', 'Morning': 'khaki', 'Afternoon': 'maroon'}
     interval = determine_x_axis_interval(timestamp)
 
+    # Start plotting
     fig = Figure(figsize=(13, 8))
     fig.subplots_adjust(hspace=0.4, top=0.95)
- 
+
     # Temperature
     temperature_axis = fig.add_subplot(3, 1, 1)
-    temperature_axis.plot_date(idx, temperature,
-                 linestyle="--", dash_joinstyle="bevel", color="salmon", linewidth=0.6,
-                 markerfacecolor="maroon", markeredgewidth=0.3,
-                 fillstyle="full")
+
+    for label in set(time_of_day):
+        x = [i for i, tod in zip(idx, time_of_day) if tod == label]
+        y = [temp for temp, tod in zip(temperature, time_of_day) if tod == label]
+        temperature_axis.plot(x, y,
+                    linestyle="--", dash_joinstyle="bevel", color=colormap[label], linewidth=0.6,
+                    marker=".", markerfacecolor="maroon", markeredgewidth=0.2,
+                    fillstyle="full")
     temperature_axis.set_title("Temperature", fontdict={"fontweight": "bold", "color": "darkblue"})
 
     temperature_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=interval))   # every x mins
@@ -55,10 +61,14 @@ def create_figure():
 
     # Rel Humidity
     rel_humidity_axis = fig.add_subplot(3, 1, 2)
-    rel_humidity_axis.plot_date(idx, rel_humidity,
-                 linestyle="--", dash_joinstyle="bevel", color="salmon", linewidth=0.6,
-                 markerfacecolor="maroon", markeredgewidth=0.3,
-                 fillstyle="full")
+
+    for label in set(time_of_day):
+        x = [i for i, tod in zip(idx, time_of_day) if tod == label]
+        y = [rel_hum for rel_hum, tod in zip(rel_humidity, time_of_day) if tod == label]
+        rel_humidity_axis.plot(x, y,
+                    linestyle="--", dash_joinstyle="bevel", color=colormap[label], linewidth=0.6,
+                    marker=".", markerfacecolor="maroon", markeredgewidth=0.2,
+                    fillstyle="full")
 
     rel_humidity_axis.set_title("Relative Humidity", fontdict={"fontweight": "bold", "color": "darkblue"})
 
@@ -70,10 +80,14 @@ def create_figure():
 
     # Abs Humidity
     abs_humidity_axis = fig.add_subplot(3, 1, 3)
-    abs_humidity_axis.plot_date(idx, abs_humidity,
-                 linestyle="--", dash_joinstyle="bevel", color="salmon", linewidth=0.6,
-                 markerfacecolor="maroon", markeredgewidth=0.3,
-                 fillstyle="full")
+
+    for label in set(time_of_day):
+        x = [i for i, tod in zip(idx, time_of_day) if tod == label]
+        y = [abs_hum for abs_hum, tod in zip(abs_humidity, time_of_day) if tod == label]
+        abs_humidity_axis.plot(x, y,
+                                linestyle="--", dash_joinstyle="bevel", color=colormap[label], linewidth=0.6,
+                                marker=".", markerfacecolor="maroon", markeredgewidth=0.2,
+                                fillstyle="full")
 
     abs_humidity_axis.set_title("Absolute Humidity", fontdict={"fontweight": "bold", "color": "darkblue"})
 
