@@ -46,10 +46,10 @@ def main():
         send_to_app(out_str)
 
 # Call it once to test it works, even with long scheduler
-main()
-sched = BackgroundScheduler(daemon=True)
-sched.add_job(main, 'interval', seconds=cfg.PERIOD)
-sched.start()
+# main()
+# sched = BackgroundScheduler(daemon=True)
+# sched.add_job(main, 'interval', seconds=cfg.PERIOD)
+# sched.start()
 
 app = Flask(__name__)
 
