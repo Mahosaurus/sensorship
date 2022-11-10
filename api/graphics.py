@@ -3,6 +3,7 @@ import math
 
 from matplotlib.figure import Figure
 import matplotlib.dates as dates
+import numpy as np
 
 INPUT_PATH = "outcome_remote.txt"
 
@@ -45,8 +46,8 @@ def create_figure():
     temperature_axis = fig.add_subplot(3, 1, 1)
 
     for label in set(time_of_day):
-        x = [i for i, tod in zip(idx, time_of_day) if tod == label]
-        y = [temp for temp, tod in zip(temperature, time_of_day) if tod == label]
+        x = [i if tod == label else np.nan for i, tod in zip(idx, time_of_day)]
+        y = [temp if tod == label else np.nan  for temp, tod in zip(temperature, time_of_day)]
         temperature_axis.plot(x, y,
                     linestyle="--", dash_joinstyle="bevel", color=colormap[label], linewidth=0.6,
                     marker=".", markerfacecolor="maroon", markeredgewidth=0.2,
@@ -63,8 +64,8 @@ def create_figure():
     rel_humidity_axis = fig.add_subplot(3, 1, 2)
 
     for label in set(time_of_day):
-        x = [i for i, tod in zip(idx, time_of_day) if tod == label]
-        y = [rel_hum for rel_hum, tod in zip(rel_humidity, time_of_day) if tod == label]
+        x = [i if tod == label else np.nan for i, tod in zip(idx, time_of_day)]
+        y = [rel_hum if tod == label else np.nan for rel_hum, tod in zip(rel_humidity, time_of_day)]
         rel_humidity_axis.plot(x, y,
                     linestyle="--", dash_joinstyle="bevel", color=colormap[label], linewidth=0.6,
                     marker=".", markerfacecolor="maroon", markeredgewidth=0.2,
@@ -82,8 +83,8 @@ def create_figure():
     abs_humidity_axis = fig.add_subplot(3, 1, 3)
 
     for label in set(time_of_day):
-        x = [i for i, tod in zip(idx, time_of_day) if tod == label]
-        y = [abs_hum for abs_hum, tod in zip(abs_humidity, time_of_day) if tod == label]
+        x = [i if tod == label else np.nan for i, tod in zip(idx, time_of_day)]
+        y = [abs_hum if tod == label else np.nan for abs_hum, tod in zip(abs_humidity, time_of_day)]
         abs_humidity_axis.plot(x, y,
                                 linestyle="--", dash_joinstyle="bevel", color=colormap[label], linewidth=0.6,
                                 marker=".", markerfacecolor="maroon", markeredgewidth=0.2,
