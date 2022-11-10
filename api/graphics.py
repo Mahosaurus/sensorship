@@ -34,7 +34,7 @@ def create_figure():
     data = load_data(INPUT_PATH)
     timestamp, time_of_day, temperature, rel_humidity, abs_humidity = parse_data(data)
     idx = [dates.datestr2num(idx) for idx in timestamp] # Conversion to proper timestamp
-    colormap = {'Night': 'black', 'Morning': 'khaki', 'Afternoon': 'maroon'}
+    colormap = {'Night': 'black', 'Morning': 'orangered', 'Day': 'indigo', 'Afternoon':'maroon', 'Evening': "cyan"}
     interval = determine_x_axis_interval(timestamp)
 
     # Start plotting
