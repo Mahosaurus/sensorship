@@ -27,6 +27,13 @@ jobs:
         run: pip install -r ./src/api_azure/api_requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
+
+      - name: Copy dependencies
+        uses: actions/upload-artifact@v3
+        with:
+          name: requirements
+          path: |
+            ./src/api_azure/api_requirements.txt
       
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v3
@@ -60,7 +67,16 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: helper-code
-          path: ./src/utils/        
+          path: ./src/utils/       
+
+      - name: Download requirements
+        uses: actions/download-artifact@v2
+        with:
+          name: requirements
+          path: .                
+
+      - name: Install dependencies
+        run: pip install -r ./api_requirements.txt          
 
       - name: Display structure of downloaded files
         run: ls -R
