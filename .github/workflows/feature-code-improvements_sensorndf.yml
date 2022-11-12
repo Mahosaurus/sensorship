@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - main
+      - feature/code-refactoring
   workflow_dispatch:
 
 jobs:
