@@ -25,15 +25,6 @@ jobs:
           
       - name: Install dependencies
         run: pip install -r ./src/api_azure/api_requirements.txt
-        
-      # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
-
-      - name: Copy dependencies
-        uses: actions/upload-artifact@v3
-        with:
-          name: requirements
-          path: |
-            ./src/api_azure/api_requirements.txt
       
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v3
@@ -76,6 +67,10 @@ jobs:
       - name: Display env
         run: env
         working-directory: .        
+
+      - name: Display plist
+        run: pip list
+        working-directory: .           
           
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
