@@ -73,7 +73,7 @@ jobs:
         working-directory: .   
 
       - name: Display venv
-        run: lsvirtualenv -l   
+        run: conda info --envs 
         working-directory: .   
              
           
