@@ -38,7 +38,8 @@ jobs:
         with:
           name: helper-code
           path: |
-            ./src/*
+            ./src/utils/*
+            ./src/config.py
 
   deploy:
     runs-on: ubuntu-latest
