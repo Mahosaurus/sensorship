@@ -33,7 +33,7 @@ jobs:
         with:
           name: python-app
           path: |
-            ./src/api_azure
+            ./src/api_azure/*
 
   deploy:
     runs-on: ubuntu-latest
