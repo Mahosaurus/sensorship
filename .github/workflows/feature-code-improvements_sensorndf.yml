@@ -50,7 +50,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: python-app
-          path: ./api_azure/app.py
+          path: ./api_azure/*
           
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
