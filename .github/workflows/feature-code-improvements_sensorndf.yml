@@ -38,7 +38,7 @@ jobs:
         with:
           name: helper-code
           path: |
-            ./src/utils/*         
+            ./src/*
 
   deploy:
     runs-on: ubuntu-latest
