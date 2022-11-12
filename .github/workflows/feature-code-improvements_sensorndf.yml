@@ -36,7 +36,7 @@ jobs:
         with:
           name: python-app
           path: |
-            ./src/* 
+            ./src/api_azure
 
   deploy:
     runs-on: ubuntu-latest
@@ -50,7 +50,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: python-app
-          path: ./api_azure/*
+          path: .
           
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
