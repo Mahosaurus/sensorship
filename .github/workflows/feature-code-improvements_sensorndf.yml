@@ -35,6 +35,13 @@ jobs:
           path: |
             ./src/api_azure/*
 
+      - name: Upload helper code for deployment jobs
+        uses: actions/upload-artifact@v3
+        with:
+          name: helper-code
+          path: |
+            ./src/utils/*         
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -47,7 +54,21 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: python-app
-          path: .
+          path: ./src/api_azure
+
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: helper-code
+          path: ./src/utils/        
+
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: .
+
+      - name: Display structure of downloaded files
+        run: env
+        working-directory: .        
           
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
