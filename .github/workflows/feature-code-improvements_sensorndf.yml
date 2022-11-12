@@ -34,7 +34,6 @@ jobs:
           name: python-app
           path: |
             ./src/api_azure/*
-            ./src/utils/*
 
   deploy:
     runs-on: ubuntu-latest
