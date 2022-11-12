@@ -23,8 +23,8 @@ jobs:
         with:
           python-version: '3.9' 
           
-      - name: Install dependencies
-        run: pip install -r ./src/api_azure/api_requirements.txt
+      # - name: Install dependencies
+      #   run: pip install -r ./src/api_azure/api_requirements.txt
       
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v3
