@@ -24,21 +24,21 @@ jobs:
           python-version: '3.9'
           
       - name: Install dependencies
-        run: pip install -r ./src/api_azure/requirements.txt
+        run: pip install -r ./src/api/requirements.txt
       
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v3
         with:
           name: python-app
           path: |
-            ./src/api_azure/*
+            ./src/api/*
 
-      # - name: Upload helper code for deployment jobs
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: helper-code
-      #     path: |
-      #       ./src/utils/*         
+      - name: Upload helper code for deployment jobs
+        uses: actions/upload-artifact@v3
+        with:
+          name: helper-code
+          path: |
+            ./src/utils/*         
 
   deploy:
     runs-on: ubuntu-latest
@@ -54,29 +54,17 @@ jobs:
           name: python-app
           path: .
 
-      # - name: Download utils from build job
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: helper-code
-      #     path: ./src/utils/ 
+      - name: Download utils from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: helper-code
+          path: ./src/utils/ 
 
-      # - name: Display structure of downloaded files
-      #   run: ls -R
-      #   working-directory: .
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: .
 
-      # - name: Display env
-      #   run: env
-      #   working-directory: .        
-
-      # - name: Display plist
-      #   run: pip list
-      #   working-directory: .   
-
-      # - name: Display venv
-      #   run: conda info --envs 
-      #   working-directory: .   
-             
-          
+         
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
