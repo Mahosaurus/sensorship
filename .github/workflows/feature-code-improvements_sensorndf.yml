@@ -21,10 +21,7 @@ jobs:
       - name: Set up Python version
         uses: actions/setup-python@v1
         with:
-          python-version: '3.9'
-
-      - name: Run setup.py
-        run: python ./src/setup.py develop          
+          python-version: '3.9' 
           
       - name: Install dependencies
         run: pip install -r ./src/api_azure/api_requirements.txt
@@ -36,7 +33,7 @@ jobs:
         with:
           name: python-app
           path: |
-            ./src
+            ./src/api_azure
 
   deploy:
     runs-on: ubuntu-latest
