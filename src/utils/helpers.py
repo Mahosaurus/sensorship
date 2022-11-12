@@ -2,6 +2,7 @@ import datetime
 
 def map_time_to_time_of_day(timestamp: str) -> str:
     """ Extract time of day from ts """
+    # TODO: Refactor this into Graphics.
     hour = int(datetime.datetime.fromtimestamp(timestamp).strftime('%H'))
     class Switch(dict):
         """ Helper class to emulate switch statement """
