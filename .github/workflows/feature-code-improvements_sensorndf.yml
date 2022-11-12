@@ -57,26 +57,17 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: Download artifact from build job
+      - name: Download app from build job
         uses: actions/download-artifact@v2
         with:
           name: python-app
           path: .
 
-      - name: Download artifact from build job
+      - name: Download utils from build job
         uses: actions/download-artifact@v2
         with:
           name: helper-code
-          path: ./src/utils/       
-
-      - name: Download requirements
-        uses: actions/download-artifact@v2
-        with:
-          name: requirements
-          path: .                
-
-      - name: Install dependencies
-        run: pip install -r ./api_requirements.txt          
+          path: ./src/utils/ 
 
       - name: Display structure of downloaded files
         run: ls -R
