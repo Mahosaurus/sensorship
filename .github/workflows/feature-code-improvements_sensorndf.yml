@@ -70,7 +70,12 @@ jobs:
 
       - name: Display plist
         run: pip list
-        working-directory: .           
+        working-directory: .   
+
+      - name: Display venv
+        run: lsvirtualenv -l   
+        working-directory: .   
+             
           
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
