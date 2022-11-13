@@ -26,11 +26,11 @@ def get_data():
 
 @app.route("/show-data")
 def plot_png():
+    plotter = PlotSensor(API_DATA_PATH)
     fig = plotter.create_figure()
     output = io.BytesIO()
     FigureCanvasAgg(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
 if __name__ == '__main__':
-    plotter = PlotSensor(API_DATA_PATH)
     app.run()
