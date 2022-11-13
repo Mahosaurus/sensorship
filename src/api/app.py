@@ -32,5 +32,12 @@ def plot_png():
     FigureCanvasAgg(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
+@app.route("/del-data")
+def del_data():
+    with open(API_DATA_PATH, "r", encoding="utf-8") as filehandle:
+        data = filehandle.read()
+    os.remove(API_DATA_PATH)
+    return data
+
 if __name__ == '__main__':
     app.run()
