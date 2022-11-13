@@ -61,7 +61,7 @@ class PlotSensor():
         data = self.load_data()
         timestamp, time_of_day, temperature, rel_humidity, abs_humidity = self.parse_data(data)
         idx = [dates.datestr2num(idx) for idx in timestamp] # Conversion to proper timestamp
-        colormap = {'Night': 'darkolivegreen', 'Morning': 'orangered', 'Day': 'indigo', 'Afternoon':'maroon', 'Evening': "purple"}
+        colormap = {'Night': 'darkolivegreen', 'Morning': 'teal', 'Day': 'indigo', 'Afternoon':'maroon', 'Evening': "purple"}
         interval = self.determine_x_axis_interval(timestamp)
 
         # Start plotting
