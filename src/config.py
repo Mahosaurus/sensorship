@@ -8,6 +8,6 @@ def get_repo_root() -> str:
     path_to_this_file = os.path.dirname(os.path.realpath(__file__)) + "/"
     return path_to_this_file
 
-API_DATA_PATH = os.path.join("~", "outcome_remote.txt")
+API_DATA_PATH = os.path.join("/home", "site", "outcome_remote.txt")
 
 

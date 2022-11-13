@@ -7,14 +7,14 @@ from typing import Tuple
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg
-import requests
 
 from src.utils.graphics import PlotSensor
 from src.utils.tempsensor import get_mock_data
 from src.utils.helpers import compile_data_point
 from src.config import get_repo_root
 
-import src.config as cfg
+
+app = Flask(__name__)
 
 def get_data() -> Tuple[str, str]:
     """ Data ingestion switch """
@@ -32,14 +32,6 @@ def main():
     out_str = compile_data_point(current_ts, temperature, humidity)
     save_to_file(out_str)
 
-# Call it once to test it works, even with long scheduler
-main()
-sched = BackgroundScheduler(daemon=True)
-sched.add_job(main, 'interval', seconds=5)
-sched.start()
-
-app = Flask(__name__)
-
 @app.route("/")
 def plot_png():
     fig = plotter.create_figure()
@@ -48,5 +40,9 @@ def plot_png():
     return Response(output.getvalue(), mimetype='image/png')
 
 if __name__ == "__main__":
+    main() # Call it once to test it works, even with long scheduler
+    sched = BackgroundScheduler(daemon=True)
+    sched.add_job(main, 'interval', seconds=5)
+    sched.start()        
     plotter = PlotSensor(os.path.join(get_repo_root(), "outcome_local.txt"))
     app.run(host="localhost", port=8000, debug=True)
