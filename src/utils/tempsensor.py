@@ -1,3 +1,4 @@
+import os
 import random
 import time
 
@@ -5,12 +6,14 @@ from typing import Tuple
 
 import smbus
 
+from config import get_repo_root
+
 address = 0x38 #Put your device's address here
 
 try:
     i2cbus = smbus.SMBus(1)
-except FileNotFoundError:
-    print("No sensor connected.")
+except (FileNotFoundError, PermissionError):
+    print("No sensor connected / permission error.")
 time.sleep(0.5)
 
 def get_sensor_data() -> Tuple[str, str]:
@@ -34,7 +37,7 @@ def get_sensor_data() -> Tuple[str, str]:
 
 def get_mock_data() -> Tuple[str, str]:
     """ Mock data if sensor is not attachted """
-    with open("random_data.txt", "r", encoding="utf-8") as filehandle:
+    with open(os.path.join(get_repo_root(), "mock_data", "random_data.txt"), "r", encoding="utf-8") as filehandle:
         data = filehandle.read()
     data = data.split("\n")
     temperature = random.choice(data)

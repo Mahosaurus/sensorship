@@ -1,9 +1,10 @@
 import io
 import os
-from flask import Flask, render_template, request, send_from_directory, Response
+from flask import Flask, render_template, request, Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
-from graphics import create_figure
+from src.utils.graphics import PlotSensor
+from src.config import API_DATA_PATH
 
 app = Flask(__name__)
 
@@ -12,28 +13,31 @@ def index():
    print('Request for index page received')
    return render_template('index.html')
 
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
-
 @app.route('/sensor-data', methods=['PUT', 'DELETE'])
 def get_data():
     if request.method == 'PUT':
         data = request.json
-        with open("outcome_remote.txt", "a", encoding="utf-8") as filehandle:
+        with open(API_DATA_PATH, "a", encoding="utf-8") as filehandle:
             filehandle.write(data["data"])
         return f"Received {data}"
     if request.method == 'DELETE':
-        os.remove("outcome_remote.txt")
+        os.remove(API_DATA_PATH)
         return "Removed sensor data"
 
 @app.route("/show-data")
 def plot_png():
-    fig = create_figure()
+    plotter = PlotSensor(API_DATA_PATH)
+    fig = plotter.create_figure()
     output = io.BytesIO()
     FigureCanvasAgg(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
+@app.route("/del-data")
+def del_data():
+    with open(API_DATA_PATH, "r", encoding="utf-8") as filehandle:
+        data = filehandle.read()
+    os.remove(API_DATA_PATH)
+    return "Deleted:\n" + data
+
 if __name__ == '__main__':
-   app.run()
+    app.run()
