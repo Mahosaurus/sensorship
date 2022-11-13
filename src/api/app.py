@@ -37,7 +37,7 @@ def del_data():
     with open(API_DATA_PATH, "r", encoding="utf-8") as filehandle:
         data = filehandle.read()
     os.remove(API_DATA_PATH)
-    return data
+    return "Deleted:\n" + data
 
 if __name__ == '__main__':
     app.run()

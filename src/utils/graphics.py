@@ -16,11 +16,10 @@ class PlotSensor():
         data = data.split("\n")[:-1]
         return data
 
-    @staticmethod
-    def parse_data(data):
+    def parse_data(self, data):
         """ Parse date from sensor """
         timestamp = [val.split(",")[0] for val in data] # Extract values
-        time_of_day = [val.split(",")[1].strip() for val in data] # Extract values
+        time_of_day = [self.map_time_to_time_of_day(ts) for ts in timestamp] # Extract values
         temperature = [float(val.split(",")[2]) for val in data] # Extract values
         rel_humidity = [float(val.split(",")[3]) for val in data] # Extract values
         abs_humidity = [humidity/(288.68 * (1.098 + temp/100)**8.02) for humidity, temp in zip (rel_humidity, temperature)]
@@ -35,12 +34,34 @@ class PlotSensor():
         interval = math.ceil(time_diff_mins/16)
         return interval
 
+    @staticmethod
+    def map_time_to_time_of_day(timestamp: str) -> str:
+        """ Extract time of day from ts """
+        hour = int(datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S").strftime("%H"))
+        class Switch(dict):
+            """ Helper class to emulate switch statement """
+            def __getitem__(self, item):
+                for key in self.keys():                 # iterate over the intervals
+                    if item in key:                     # if the argument is in that interval
+                        return super().__getitem__(key) # return its associated value
+                raise KeyError(item)                    # if not in any interval, raise KeyError
+        switch = Switch({
+            range(0, 6): 'Night',
+            range(6, 10): 'Morning',
+            range(10, 14): 'Day',
+            range(14, 17): 'Afternoon',
+            range(17, 21): 'Evening',
+            range(21, 24): 'Night'
+        })
+        time_of_day = switch[hour]
+        return time_of_day        
+
     def create_figure(self):
         """ Creates figure from outcome.txt content """
         data = self.load_data()
         timestamp, time_of_day, temperature, rel_humidity, abs_humidity = self.parse_data(data)
         idx = [dates.datestr2num(idx) for idx in timestamp] # Conversion to proper timestamp
-        colormap = {'Night': 'black', 'Morning': 'orangered', 'Day': 'indigo', 'Afternoon':'maroon', 'Evening': "cyan"}
+        colormap = {'Night': 'darkolivegreen', 'Morning': 'orangered', 'Day': 'indigo', 'Afternoon':'maroon', 'Evening': "purple"}
         interval = self.determine_x_axis_interval(timestamp)
 
         # Start plotting
