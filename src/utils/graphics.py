@@ -6,10 +6,14 @@ import matplotlib.dates as dates
 import numpy as np
 
 class PlotSensor():
-
     def __init__(self, source_path):
         self.source_path = source_path
-   
+        self.colormap = {'Night': 'darkolivegreen',
+                         'Morning': 'teal',
+                         'Day': 'indigo',
+                         'Afternoon':'maroon',
+                         'Evening': "purple"}
+
     def load_data(self):
         with open(self.source_path, "r", encoding="utf-8") as filehandle:
             data = filehandle.read()
@@ -54,73 +58,43 @@ class PlotSensor():
             range(21, 24): 'Night'
         })
         time_of_day = switch[hour]
-        return time_of_day        
+        return time_of_day
 
     def create_figure(self):
         """ Creates figure from outcome.txt content """
         data = self.load_data()
         timestamp, time_of_day, temperature, rel_humidity, abs_humidity = self.parse_data(data)
         idx = [dates.datestr2num(idx) for idx in timestamp] # Conversion to proper timestamp
-        colormap = {'Night': 'darkolivegreen', 'Morning': 'teal', 'Day': 'indigo', 'Afternoon':'maroon', 'Evening': "purple"}
+
         interval = self.determine_x_axis_interval(timestamp)
 
         # Start plotting
         fig = Figure(figsize=(13, 8))
         fig.subplots_adjust(hspace=0.4, top=0.95)
 
-        # Temperature
+        # Subplots
         temperature_axis = fig.add_subplot(3, 1, 1)
-
-        for label in set(time_of_day):
-            x = [i if tod == label else np.nan for i, tod in zip(idx, time_of_day)]
-            y = [temp if tod == label else np.nan  for temp, tod in zip(temperature, time_of_day)]
-            temperature_axis.plot(x, y,
-                        linestyle="--", dash_joinstyle="bevel", color=colormap[label], linewidth=0.6,
-                        marker=".", markerfacecolor="maroon", markeredgewidth=0.2,
-                        fillstyle="full")
-        temperature_axis.set_title("Temperature", fontdict={"fontweight": "bold", "color": "darkblue"})
-
-        temperature_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=interval))   # every x mins
-        temperature_axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
-
-        temperature_axis.xaxis.set_major_locator(dates.DayLocator(interval=1))    # every day
-        temperature_axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y'))
-
-        # Rel Humidity
         rel_humidity_axis = fig.add_subplot(3, 1, 2)
-
-        for label in set(time_of_day):
-            x = [i if tod == label else np.nan for i, tod in zip(idx, time_of_day)]
-            y = [rel_hum if tod == label else np.nan for rel_hum, tod in zip(rel_humidity, time_of_day)]
-            rel_humidity_axis.plot(x, y,
-                        linestyle="--", dash_joinstyle="bevel", color=colormap[label], linewidth=0.6,
-                        marker=".", markerfacecolor="maroon", markeredgewidth=0.2,
-                        fillstyle="full")
-
-        rel_humidity_axis.set_title("Relative Humidity", fontdict={"fontweight": "bold", "color": "darkblue"})
-
-        rel_humidity_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=interval))   # every x mins
-        rel_humidity_axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
-
-        rel_humidity_axis.xaxis.set_major_locator(dates.DayLocator(interval=1))    # every day
-        rel_humidity_axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y'))
-
-        # Abs Humidity
         abs_humidity_axis = fig.add_subplot(3, 1, 3)
+        self.create_plot(temperature_axis, temperature, idx, time_of_day, interval)
+        self.create_plot(rel_humidity_axis, rel_humidity, idx, time_of_day, interval)
+        self.create_plot(abs_humidity_axis, abs_humidity, idx, time_of_day, interval)
 
+        return fig
+
+    def create_plot(self, axis, variable, idx, time_of_day, interval):
+        """ Creates generic plot """
         for label in set(time_of_day):
             x = [i if tod == label else np.nan for i, tod in zip(idx, time_of_day)]
-            y = [abs_hum if tod == label else np.nan for abs_hum, tod in zip(abs_humidity, time_of_day)]
-            abs_humidity_axis.plot(x, y,
-                                    linestyle="--", dash_joinstyle="bevel", color=colormap[label], linewidth=0.6,
-                                    marker=".", markerfacecolor="maroon", markeredgewidth=0.2,
-                                    fillstyle="full")
+            y = [temp if tod == label else np.nan  for temp, tod in zip(variable, time_of_day)]
+            axis.plot(x, y,
+                        linestyle="--", dash_joinstyle="bevel", color=self.colormap[label], linewidth=0.6,
+                        marker=".", markerfacecolor=self.colormap[label], markeredgewidth=0.2,
+                        fillstyle="full")
+        axis.set_title("Temperature", fontdict={"fontweight": "bold", "color": "darkblue"})
 
-        abs_humidity_axis.set_title("Absolute Humidity", fontdict={"fontweight": "bold", "color": "darkblue"})
+        axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=interval))   # every x mins
+        axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
 
-        abs_humidity_axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=interval))   # every x mins
-        abs_humidity_axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
-
-        abs_humidity_axis.xaxis.set_major_locator(dates.DayLocator(interval=1))    # every day
-        abs_humidity_axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y'))
-        return fig
+        axis.xaxis.set_major_locator(dates.DayLocator(interval=1))    # every day
+        axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y'))
