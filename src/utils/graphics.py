@@ -82,7 +82,7 @@ class PlotSensor():
 
         return fig
 
-    def create_plot(self, label, axis, variable, idx, time_of_day, interval):
+    def create_plot(self, title, axis, variable, idx, time_of_day, interval):
         """ Creates generic plot """
         for label in set(time_of_day):
             x = [i if tod == label else np.nan for i, tod in zip(idx, time_of_day)]
@@ -91,7 +91,7 @@ class PlotSensor():
                         linestyle="--", dash_joinstyle="bevel", color=self.colormap[label], linewidth=0.6,
                         marker=".", markerfacecolor=self.colormap[label], markeredgewidth=0.2,
                         fillstyle="full")
-        axis.set_title(label, fontdict={"fontweight": "bold", "color": "darkblue"})
+        axis.set_title(title, fontdict={"fontweight": "bold", "color": "darkblue"})
 
         axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=interval))   # every x mins
         axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
