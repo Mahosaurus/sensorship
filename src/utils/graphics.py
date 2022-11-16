@@ -26,7 +26,10 @@ class PlotSensor():
         time_of_day = [self.map_time_to_time_of_day(ts) for ts in timestamp] # Extract values
         temperature = [float(val.split(",")[2]) for val in data] # Extract values
         rel_humidity = [float(val.split(",")[3]) for val in data] # Extract values
-        abs_humidity = [humidity/(288.68 * (1.098 + temp/100)**8.02) for humidity, temp in zip (rel_humidity, temperature)]
+
+        conv_to_abs_humidity = lambda temp, humidity: (6.112*math.exp((17.67*temp)/(temp + 243.5)) * humidity * 2.1674) / (273.15+temp)
+        #abs_humidity = [humidity/(288.68 * (1.098 + temp/100)**8.02) for humidity, temp in zip (rel_humidity, temperature)]
+        abs_humidity = [conv_to_abs_humidity(temp, humidity) for humidity, temp in zip (rel_humidity, temperature)]
         return timestamp, time_of_day, temperature, rel_humidity, abs_humidity
 
     @staticmethod
