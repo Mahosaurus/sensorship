@@ -3,6 +3,7 @@ import os
 from flask import Flask, render_template, request, Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
+from src.utils.aggregator import aggregate
 from src.utils.graphics import PlotSensor
 from src.config import API_DATA_PATH
 
@@ -13,16 +14,13 @@ def index():
    print('Request for index page received')
    return render_template('index.html')
 
-@app.route('/sensor-data', methods=['PUT', 'DELETE'])
+@app.route('/sensor-data', methods=['PUT'])
 def get_data():
     if request.method == 'PUT':
         data = request.json
         with open(API_DATA_PATH, "a", encoding="utf-8") as filehandle:
             filehandle.write(data["data"])
         return f"Received {data}"
-    if request.method == 'DELETE':
-        os.remove(API_DATA_PATH)
-        return "Removed sensor data"
 
 @app.route("/show-data")
 def plot_png():
@@ -38,6 +36,21 @@ def del_data():
         data = filehandle.read()
     os.remove(API_DATA_PATH)
     return "Deleted:\n" + data
+
+@app.route("/text-data")
+def text_data():
+    with open(API_DATA_PATH, "r", encoding="utf-8") as filehandle:
+        data = filehandle.read()
+    return data.split("\n")
+
+@app.route("/aggregate-data")
+def aggregate_data():
+    with open(API_DATA_PATH, "r", encoding="utf-8") as filehandle:
+        data = filehandle.read()
+    aggregated_data = aggregate(data)
+    with open(API_DATA_PATH, "w", encoding="utf-8") as filehandle:
+        data = filehandle.write(aggregated_data)
+    return "Success"
 
 if __name__ == '__main__':
     app.run()

@@ -8,10 +8,12 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
+from src.utils.aggregator import aggregate
 from src.utils.graphics import PlotSensor
 from src.utils.tempsensor import get_mock_data
 from src.utils.helpers import compile_data_point
 from src.config import get_repo_root
+from src.config import APP_TEST_DATA_PATH
 
 
 app = Flask(__name__)
@@ -39,10 +41,25 @@ def plot_png():
     FigureCanvasAgg(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
+@app.route("/text-data")
+def text_data():
+    with open(APP_TEST_DATA_PATH, "r", encoding="utf-8") as filehandle:
+        data = filehandle.read()
+    return data.split("\n")
+
+@app.route("/aggregate-data")
+def aggregate_data():
+    with open(APP_TEST_DATA_PATH, "r", encoding="utf-8") as filehandle:
+        data = filehandle.read()
+    aggregated_data = aggregate(data)
+    with open(APP_TEST_DATA_PATH, "w", encoding="utf-8") as filehandle:
+        data = filehandle.write(aggregated_data)
+    return "Success"
+
 if __name__ == "__main__":
     main() # Call it once to test it works, even with long scheduler
     sched = BackgroundScheduler(daemon=True)
     sched.add_job(main, 'interval', seconds=5)
-    sched.start()        
-    plotter = PlotSensor(os.path.join(get_repo_root(), "outcome_local.txt"))
+    sched.start()
+    plotter = PlotSensor(APP_TEST_DATA_PATH)
     app.run(host="localhost", port=8000, debug=True)

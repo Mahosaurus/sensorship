@@ -3,3 +3,4 @@ APScheduler==3.9.1
 matplotlib==3.6.1
 requests==2.28.1
 smbus==1.1.post2
+more_itertools==9.0.0

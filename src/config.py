@@ -9,5 +9,4 @@ def get_repo_root() -> str:
     return path_to_this_file
 
 API_DATA_PATH = os.path.join("/home", "site", "outcome_remote.txt")
-
-
+APP_TEST_DATA_PATH = os.path.join(get_repo_root(), "outcome_local.txt")
