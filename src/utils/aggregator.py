@@ -19,8 +19,8 @@ def aggregate(data, base="hours"):
         runner = 0
         for idx in indices:
             aggregated_timestamps.append(idx[0])
-            aggregated_temperature.append(int(np.mean(temperature[runner:runner+idx[1]])))
-            aggregated_humidity.append(int(np.mean(rel_humidity[runner:runner+idx[1]])))
+            aggregated_temperature.append(round(np.mean(temperature[runner:runner+idx[1]]), 2))
+            aggregated_humidity.append(round(np.mean(rel_humidity[runner:runner+idx[1]]), 2))
             runner += idx[1]
         out_data = ""
         for i in range(len(indices)):
