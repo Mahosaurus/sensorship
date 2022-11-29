@@ -10,8 +10,6 @@ import requests
 from src.utils.tempsensor import get_sensor_data
 from src.utils.helpers import compile_data_point
 
-import src.config as cfg
-
 def get_data() -> Tuple[str, str]:
     """ Data ingestion switch """
     return get_sensor_data()
