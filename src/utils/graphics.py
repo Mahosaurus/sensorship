@@ -3,6 +3,7 @@ import math
 
 from matplotlib.figure import Figure
 import matplotlib.dates as dates
+import pandas as pd
 import numpy as np
 
 from src.utils.helpers import parse_data_points
@@ -31,7 +32,7 @@ class PlotSensor():
         return timestamp, time_of_day, temperature, rel_humidity, abs_humidity
 
     @staticmethod
-    def determine_x_axis_interval(timestamp):
+    def determine_x_axis_interval(timestamp) -> int:
         """ Determine the interval to be 16 steps """
         mini = datetime.datetime.strptime(min(timestamp), "%Y-%m-%d %H:%M:%S").timestamp()
         maxi = datetime.datetime.strptime(max(timestamp), "%Y-%m-%d %H:%M:%S").timestamp()
@@ -83,7 +84,7 @@ class PlotSensor():
 
         return fig
 
-    def create_plot(self, title, axis, variable, idx, time_of_day, interval):
+    def create_plot(self, title: str, axis, variable, idx: int, time_of_day, interval):
         """ Creates generic plot """
         for label in set(time_of_day):
             x = [i if tod == label else np.nan for i, tod in zip(idx, time_of_day)]
@@ -99,3 +100,24 @@ class PlotSensor():
 
         axis.xaxis.set_major_locator(dates.DayLocator(interval=1))    # every day
         axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y'))
+
+class PlotPrediction():
+    
+    def __init__(self, data: pd.DataFrame):
+        self.data_subset = data[["timestamp", "predictions"]]
+        self.data_subset = self.data_subset.to_dict(orient="list")
+
+    def create_figure(self):
+        fig = Figure(figsize=(13, 8))
+        axis = fig.add_subplot(1, 1, 1)
+        axis.plot(self.data_subset["timestamp"], self.data_subset["predictions"],
+                    linestyle="--", dash_joinstyle="bevel", linewidth=0.6,
+                    marker=".", markeredgewidth=0.2,
+                    fillstyle="full")  
+        axis.xaxis.set_major_locator(dates.HourLocator(interval=6))    # every day
+        axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y %H:%M'))                    
+        axis.set_title("Predictions temperature next 24h", fontdict={"fontweight": "bold", "color": "darkblue"})      
+        return fig
+
+
+

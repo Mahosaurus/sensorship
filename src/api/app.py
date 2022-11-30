@@ -5,7 +5,7 @@ from flask import Flask, render_template, request, Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
 from src.utils.aggregator import aggregate
-from src.utils.graphics import PlotSensor
+from src.utils.graphics import PlotSensor, PlotPrediction
 from src.predictor.startnet import StartNet
 from src.utils.predictor import make_prediction
 from src.config import API_DATA_PATH
@@ -60,7 +60,11 @@ def aggregate_data():
 @app.route("/predict-data")
 def predict():
     result = make_prediction()
-    return result    
+    pred_plotter = PlotPrediction(result)
+    fig = pred_plotter.create_figure()
+    output = io.BytesIO()
+    FigureCanvasAgg(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
 
 if __name__ == '__main__':
     app.run()
