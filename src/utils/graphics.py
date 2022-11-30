@@ -19,7 +19,6 @@ class PlotSensor():
     def load_data(self):
         with open(self.source_path, "r", encoding="utf-8") as filehandle:
             data = filehandle.read()
-        data = data.split("\n")[:-1]
         return data
 
     def parse_data(self, data):
