@@ -1,15 +1,18 @@
 import io
 import os
+
 from flask import Flask, render_template, request, Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
 from src.utils.aggregator import aggregate
 from src.utils.graphics import PlotSensor
-from src.utils.predictor import make_prediction
 from src.predictor.startnet import StartNet
+from src.utils.predictor import make_prediction
 from src.config import API_DATA_PATH
 
 app = Flask(__name__)
+startnet = StartNet()
+print(startnet)   
 
 @app.route('/')
 def index():
@@ -54,7 +57,7 @@ def aggregate_data():
         data = filehandle.write(aggregated_data)
     return "Success"
 
-@app.route("/predict")
+@app.route("/predict-data")
 def predict():
     result = make_prediction()
     return result    

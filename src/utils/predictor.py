@@ -1,6 +1,5 @@
 import datetime
 
-import time
 import os
 
 import torch
@@ -12,7 +11,12 @@ from src.config import get_repo_root
 
 
 def load_model():
-    model = torch.load(os.path.join(get_repo_root(), "predictor", "startnet"))
+    path_to_model = os.path.join(get_repo_root(), "predictor", "startnet.model")
+    model = StartNet()
+    if not os.path.isfile(path_to_model):
+        print("Model state dict not found")
+        return None
+    model.load_state_dict(torch.load(path_to_model))
     model.eval()
     return model
 

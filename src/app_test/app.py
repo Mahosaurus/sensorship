@@ -12,8 +12,8 @@ from src.utils.aggregator import aggregate
 from src.utils.graphics import PlotSensor
 from src.utils.tempsensor import get_mock_data
 from src.utils.helpers import compile_data_point
-from src.utils.predictor import make_prediction
 from src.predictor.startnet import StartNet
+from src.utils.predictor import make_prediction
 from src.config import get_repo_root
 from src.config import APP_TEST_DATA_PATH
 
@@ -58,7 +58,7 @@ def aggregate_data():
         data = filehandle.write(aggregated_data)
     return "Success"
 
-@app.route("/predict")
+@app.route("/predict-data")
 def predict():
     result = make_prediction()
     return result

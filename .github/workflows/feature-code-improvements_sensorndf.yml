@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - main
+      - bugfix/deployment-of-torch
   workflow_dispatch:
 
 jobs:
@@ -38,6 +39,7 @@ jobs:
           name: helper-code
           path: |
             ./src/utils/*
+            ./src/predictor/*
             ./src/config.py
 
   deploy:
