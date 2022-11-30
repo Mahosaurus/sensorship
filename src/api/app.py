@@ -61,4 +61,6 @@ def predict():
     return result    
 
 if __name__ == '__main__':
+    startnet = StartNet()
+    print(startnet)    
     app.run()
