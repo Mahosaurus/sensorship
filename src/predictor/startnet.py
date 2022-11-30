@@ -5,9 +5,10 @@ class StartNet(nn.Module):
     def __init__(self):
         super(StartNet, self).__init__()
         self.model = nn.Sequential(
-            nn.Linear(3, 15),
-            nn.ReLU(),
-            nn.Linear(15, 1))
+            nn.Linear(3, 20),
+            nn.Dropout(),
+            nn.Sigmoid(),
+            nn.Linear(20, 1))
 
     def forward(self, x):
         x = self.model(x)
