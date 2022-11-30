@@ -5,6 +5,8 @@ from matplotlib.figure import Figure
 import matplotlib.dates as dates
 import numpy as np
 
+from src.utils.helpers import parse_data_points
+
 class PlotSensor():
     def __init__(self, source_path):
         self.source_path = source_path
@@ -22,10 +24,8 @@ class PlotSensor():
 
     def parse_data(self, data):
         """ Parse date from sensor """
-        timestamp = [val.split(",")[0] for val in data] # Extract values
+        timestamp, temperature, rel_humidity = parse_data_points(data)
         time_of_day = [self.map_time_to_time_of_day(ts) for ts in timestamp] # Extract values
-        temperature = [float(val.split(",")[2]) for val in data] # Extract values
-        rel_humidity = [float(val.split(",")[3]) for val in data] # Extract values
 
         conv_to_abs_humidity = lambda temp, humidity: (6.112*math.exp((17.67*temp)/(temp + 243.5)) * humidity * 2.1674) / (273.15+temp)
         abs_humidity = [conv_to_abs_humidity(temp, humidity) for humidity, temp in zip (rel_humidity, temperature)]

@@ -18,8 +18,3 @@ def test_get_features():
     assert "hour" in result.columns.values
     assert "day_of_year" in result.columns.values
     assert "weekday" in result.columns.values
-
-# def test_load_model():
-#     result = load_model()
-#     assert len(result) == 25
-
