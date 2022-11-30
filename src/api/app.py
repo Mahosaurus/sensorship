@@ -11,6 +11,8 @@ from src.utils.predictor import make_prediction
 from src.config import API_DATA_PATH
 
 app = Flask(__name__)
+startnet = StartNet()
+print(startnet)   
 
 @app.route('/')
 def index():
@@ -61,6 +63,4 @@ def predict():
     return result    
 
 if __name__ == '__main__':
-    startnet = StartNet()
-    print(startnet)    
     app.run()
