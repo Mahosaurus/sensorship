@@ -58,7 +58,7 @@ def aggregate_data():
         data = filehandle.write(aggregated_data)
     return "Success"
 
-@app.route("/predict")
+@app.route("/predict-data")
 def predict():
     result = make_prediction()
     return result
