@@ -11,13 +11,13 @@ from src.config import get_repo_root
 
 
 def load_model():
-    path_to_model = os.path.join(get_repo_root(), "predictor", "startnet")
+    path_to_model = os.path.join(get_repo_root(), "predictor", "startnet.model")
     startnet = StartNet()
     print(startnet)
     if not os.path.isfile(path_to_model):
         print("Model file not found")
         return None
-    model = torch.load(os.path.join(get_repo_root(), "predictor", "startnet"))
+    model = torch.load(path_to_model)
     model.eval()
     return model
 
