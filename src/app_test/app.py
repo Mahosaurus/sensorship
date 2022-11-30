@@ -9,7 +9,7 @@ from flask import Flask, Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
 from src.utils.aggregator import aggregate
-from src.utils.graphics import PlotSensor
+from src.utils.graphics import PlotSensor, PlotPrediction
 from src.utils.tempsensor import get_mock_data
 from src.utils.helpers import compile_data_point
 from src.predictor.startnet import StartNet
@@ -61,8 +61,12 @@ def aggregate_data():
 @app.route("/predict-data")
 def predict():
     result = make_prediction()
-    return result
-
+    pred_plotter = PlotPrediction(result)
+    fig = pred_plotter.create_figure()
+    output = io.BytesIO()
+    FigureCanvasAgg(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+    
 if __name__ == "__main__":
     main() # Call it once to test it works, even with long scheduler
     sched = BackgroundScheduler(daemon=True)

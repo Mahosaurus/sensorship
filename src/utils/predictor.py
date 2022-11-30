@@ -11,7 +11,7 @@ from src.config import get_repo_root
 
 
 def load_model():
-    path_to_model = os.path.join(get_repo_root(), "predictor", "startnet.model")
+    path_to_model = os.path.join(get_repo_root(), "predictor", "startnet_temperature.model")
     model = StartNet()
     if not os.path.isfile(path_to_model):
         print("Model state dict not found")
@@ -38,7 +38,7 @@ def get_features(timestamp_df):
     timestamp_df["weekday"] = timestamp_df["timestamp"].dt.weekday 
     return timestamp_df   
 
-def make_prediction():
+def make_prediction() -> pd.DataFrame:
     timestamp_df = make_24hrs()
     features = get_features(timestamp_df)
     model = load_model()
@@ -48,7 +48,7 @@ def make_prediction():
         prediction = model(torch.tensor([row["hour"], row["weekday"], row["day_of_year"]]))
         predictions.append(round(prediction.tolist()[0], 2))
     features["predictions"] = predictions
-    return features.to_dict(orient="index")
+    return features
 
 if __name__ == "__main__":
     load_model()
