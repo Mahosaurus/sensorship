@@ -6,13 +6,12 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 
 from src.utils.aggregator import aggregate
 from src.utils.graphics import PlotSensor, PlotPrediction
-from src.predictor.startnet import StartNet
-from src.utils.predictor import make_prediction
+from src.predictor.temperature_ffn_model import FFNModel
+from src.predictor.temperature_lstm_model import LSTMModel
+from src.utils.predictor import make_ffn_prediction, make_lstm_prediction
 from src.config import API_DATA_PATH
 
 app = Flask(__name__)
-startnet = StartNet()
-print(startnet)   
 
 @app.route('/')
 def index():
@@ -59,7 +58,7 @@ def aggregate_data():
 
 @app.route("/predict-data")
 def predict():
-    result = make_prediction()
+    result = make_lstm_prediction()
     pred_plotter = PlotPrediction(result)
     fig = pred_plotter.create_figure()
     output = io.BytesIO()

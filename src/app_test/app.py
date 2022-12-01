@@ -12,8 +12,9 @@ from src.utils.aggregator import aggregate
 from src.utils.graphics import PlotSensor, PlotPrediction
 from src.utils.tempsensor import get_mock_data
 from src.utils.helpers import compile_data_point
-from src.predictor.startnet import StartNet
-from src.utils.predictor import make_prediction
+from src.predictor.temperature_ffn_model import FFNModel
+from src.predictor.temperature_lstm_model import LSTMModel
+from src.utils.predictor import make_ffn_prediction, make_lstm_prediction
 from src.config import get_repo_root
 from src.config import APP_TEST_DATA_PATH
 
@@ -60,7 +61,7 @@ def aggregate_data():
 
 @app.route("/predict-data")
 def predict():
-    result = make_prediction()
+    result = make_lstm_prediction()
     pred_plotter = PlotPrediction(result)
     fig = pred_plotter.create_figure()
     output = io.BytesIO()

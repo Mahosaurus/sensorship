@@ -1,10 +1,10 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-class StartNet(nn.Module):
+class FFNModel(nn.Module):
 
     def __init__(self):
-        super(StartNet, self).__init__()
+        super(FFNModel, self).__init__()
         self.fc1 = nn.Linear(3, 9)
         self.fc2 = nn.Linear(9, 1)            
 

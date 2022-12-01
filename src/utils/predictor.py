@@ -6,19 +6,29 @@ import torch
 
 import pandas as pd
 
-from src.predictor.startnet import StartNet
+from src.predictor.temperature_ffn_model import FFNModel
+from src.predictor.temperature_lstm_model import LSTMModel
 from src.config import get_repo_root
 
-
-def load_model():
-    path_to_model = os.path.join(get_repo_root(), "predictor", "startnet_temperature.model")
-    model = StartNet()
+def load_ffn_temp_model():
+    path_to_model = os.path.join(get_repo_root(), "predictor", "temperature_ffn.model")
+    model = FFNModel()
     if not os.path.isfile(path_to_model):
         print("Model state dict not found")
         return None
     model.load_state_dict(torch.load(path_to_model))
     model.eval()
     return model
+
+def load_lstm_temp_model():
+    path_to_model = os.path.join(get_repo_root(), "predictor", "temperature_lstm.model")
+    model = LSTMModel()
+    if not os.path.isfile(path_to_model):
+        print("Model state dict not found")
+        return None
+    model.load_state_dict(torch.load(path_to_model))
+    model.eval()
+    return model    
 
 def make_24hrs():
     current_time = datetime.datetime.now()
@@ -38,10 +48,10 @@ def get_features(timestamp_df):
     timestamp_df["weekday"] = timestamp_df["timestamp"].dt.weekday 
     return timestamp_df   
 
-def make_prediction() -> pd.DataFrame:
+def make_ffn_prediction() -> pd.DataFrame:
     timestamp_df = make_24hrs()
     features = get_features(timestamp_df)
-    model = load_model()
+    model = load_ffn_temp_model()
     predictions = []
     for _, row in features.iterrows():
         row["hour"] = float(row["hour"]) # Convert to float
@@ -50,7 +60,13 @@ def make_prediction() -> pd.DataFrame:
     features["predictions"] = predictions
     return features
 
-if __name__ == "__main__":
-    load_model()
+def make_lstm_prediction() -> pd.DataFrame:
+
+    model = load_lstm_temp_model()
+    predictions = []
+
+    features["predictions"] = predictions
+    return features    
+
 
 
