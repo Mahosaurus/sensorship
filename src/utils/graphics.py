@@ -52,12 +52,9 @@ class PlotSensor():
                         return super().__getitem__(key) # return its associated value
                 raise KeyError(item)                    # if not in any interval, raise KeyError
         switch = Switch({
-            range(0, 6): 'Night',
-            range(6, 10): 'Morning',
-            range(10, 14): 'Day',
-            range(14, 17): 'Afternoon',
-            range(17, 21): 'Evening',
-            range(21, 24): 'Night'
+            range(0, 8): 'Night',
+            range(8, 19): 'Day',
+            range(19, 24): 'Night'
         })
         time_of_day = switch[hour]
         return time_of_day
