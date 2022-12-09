@@ -6,9 +6,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 
 from src.utils.aggregator import aggregate
 from src.utils.graphics import PlotSensor, PlotPrediction
-from src.predictor.temperature_ffn_model import FFNModel
-from src.predictor.temperature_lstm_model import LSTMModel
-from src.utils.predictor import make_ffn_prediction, make_lstm_prediction
+from src.utils.predictor import make_lstm_prediction
 from src.config import API_DATA_PATH
 
 app = Flask(__name__)

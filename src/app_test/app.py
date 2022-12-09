@@ -10,11 +10,10 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 
 from src.utils.aggregator import aggregate
 from src.utils.graphics import PlotSensor, PlotPrediction
+from src.utils.io_interaction import read_data, write_data
 from src.utils.tempsensor import get_mock_data
 from src.utils.helpers import compile_data_point
-from src.predictor.temperature_ffn_model import FFNModel
-from src.predictor.temperature_lstm_model import LSTMModel
-from src.utils.predictor import make_ffn_prediction, make_lstm_prediction
+from src.utils.predictor import Predictor
 from src.config import get_repo_root
 from src.config import APP_TEST_DATA_PATH
 
@@ -46,22 +45,20 @@ def plot_png():
 
 @app.route("/text-data")
 def text_data():
-    with open(APP_TEST_DATA_PATH, "r", encoding="utf-8") as filehandle:
-        data = filehandle.read()
+    data = read_data(APP_TEST_DATA_PATH)
     return data.split("\n")
 
 @app.route("/aggregate-data")
 def aggregate_data():
-    with open(APP_TEST_DATA_PATH, "r", encoding="utf-8") as filehandle:
-        data = filehandle.read()
+    data = read_data(APP_TEST_DATA_PATH)
     aggregated_data = aggregate(data)
-    with open(APP_TEST_DATA_PATH, "w", encoding="utf-8") as filehandle:
-        data = filehandle.write(aggregated_data)
+    write_data(aggregated_data, APP_TEST_DATA_PATH)
     return "Success"
 
 @app.route("/predict-data")
 def predict():
-    result = make_lstm_prediction()
+    predictor = Predictor(APP_TEST_DATA_PATH)
+    result = predictor.make_lstm_prediction()
     pred_plotter = PlotPrediction(result)
     fig = pred_plotter.create_figure()
     output = io.BytesIO()
@@ -71,7 +68,7 @@ def predict():
 if __name__ == "__main__":
     main() # Call it once to test it works, even with long scheduler
     sched = BackgroundScheduler(daemon=True)
-    sched.add_job(main, 'interval', seconds=5)
+    #sched.add_job(main, 'interval', seconds=5)
     sched.start()
     plotter = PlotSensor(APP_TEST_DATA_PATH)
     app.run(host="localhost", port=8000, debug=True)

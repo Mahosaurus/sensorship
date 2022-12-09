@@ -6,6 +6,7 @@ import matplotlib.dates as dates
 import pandas as pd
 import numpy as np
 
+from src.utils.io_interaction import read_data
 from src.utils.helpers import parse_data_points
 
 class PlotSensor():
@@ -17,11 +18,6 @@ class PlotSensor():
                          'Afternoon':'maroon',
                          'Evening': "purple"}
 
-    def load_data(self):
-        with open(self.source_path, "r", encoding="utf-8") as filehandle:
-            data = filehandle.read()
-        return data
-
     def parse_data(self, data):
         """ Parse date from sensor """
         timestamp, temperature, rel_humidity = parse_data_points(data)
@@ -32,13 +28,22 @@ class PlotSensor():
         return timestamp, time_of_day, temperature, rel_humidity, abs_humidity
 
     @staticmethod
-    def determine_x_axis_interval(timestamp) -> int:
-        """ Determine the interval to be 16 steps """
+    def determine_minor_x_axis_interval(timestamp, steps=16) -> int:
+        """ Determine the interval to be 16 steps, as this fits font size with plot """
         mini = datetime.datetime.strptime(min(timestamp), "%Y-%m-%d %H:%M:%S").timestamp()
         maxi = datetime.datetime.strptime(max(timestamp), "%Y-%m-%d %H:%M:%S").timestamp()
-        time_diff_mins = (maxi-mini)/60
-        interval = math.ceil(time_diff_mins/16)
+        time_diff_mins = (maxi-mini)/60 # Minute Locator
+        interval = math.ceil(time_diff_mins/steps)
         return interval
+
+    @staticmethod
+    def determine_major_x_axis_interval(timestamp, steps=16) -> int:
+        """ Determine the interval to be 16 steps, as this fits font size with plot """
+        mini = datetime.datetime.strptime(min(timestamp), "%Y-%m-%d %H:%M:%S").timestamp()
+        maxi = datetime.datetime.strptime(max(timestamp), "%Y-%m-%d %H:%M:%S").timestamp()
+        time_diff_days = (maxi-mini)/(60*60*24) # Day Locator
+        interval = math.ceil(time_diff_days/steps)
+        return interval        
 
     @staticmethod
     def map_time_to_time_of_day(timestamp: str) -> str:
@@ -61,11 +66,12 @@ class PlotSensor():
 
     def create_figure(self):
         """ Creates figure from outcome.txt content """
-        data = self.load_data()
+        data = read_data(self.source_path)
         timestamp, time_of_day, temperature, rel_humidity, abs_humidity = self.parse_data(data)
         idx = [dates.datestr2num(idx) for idx in timestamp] # Conversion to proper timestamp
 
-        interval = self.determine_x_axis_interval(timestamp)
+        interval_minor = self.determine_minor_x_axis_interval(timestamp)
+        interval_major = self.determine_major_x_axis_interval(timestamp)
 
         # Start plotting
         fig = Figure(figsize=(13, 8))
@@ -75,13 +81,13 @@ class PlotSensor():
         temperature_axis = fig.add_subplot(3, 1, 1)
         rel_humidity_axis = fig.add_subplot(3, 1, 2)
         abs_humidity_axis = fig.add_subplot(3, 1, 3)
-        self.create_plot("Temperature", temperature_axis, temperature, idx, time_of_day, interval)
-        self.create_plot("Rel Humidity", rel_humidity_axis, rel_humidity, idx, time_of_day, interval)
-        self.create_plot("Abs Humidity", abs_humidity_axis, abs_humidity, idx, time_of_day, interval)
+        self.create_plot("Temperature", temperature_axis, temperature, idx, time_of_day, interval_minor, interval_major)
+        self.create_plot("Rel Humidity", rel_humidity_axis, rel_humidity, idx, time_of_day, interval_minor, interval_major)
+        self.create_plot("Abs Humidity", abs_humidity_axis, abs_humidity, idx, time_of_day, interval_minor, interval_major)
 
         return fig
 
-    def create_plot(self, title: str, axis, variable, idx: int, time_of_day, interval):
+    def create_plot(self, title: str, axis, variable, idx: int, time_of_day, interval_minor, interval_major):
         """ Creates generic plot """
         for label in set(time_of_day):
             x = [i if tod == label else np.nan for i, tod in zip(idx, time_of_day)]
@@ -92,10 +98,10 @@ class PlotSensor():
                         fillstyle="full")
         axis.set_title(title, fontdict={"fontweight": "bold", "color": "darkblue"})
 
-        axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=interval))   # every x mins
+        axis.xaxis.set_minor_locator(dates.MinuteLocator(interval=interval_minor))   # every x mins
         axis.xaxis.set_minor_formatter(dates.DateFormatter('%H:%M'))  # hours and minutes
 
-        axis.xaxis.set_major_locator(dates.DayLocator(interval=1))    # every day
+        axis.xaxis.set_major_locator(dates.DayLocator(interval=interval_major))    # every day
         axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y'))
 
 class PlotPrediction():

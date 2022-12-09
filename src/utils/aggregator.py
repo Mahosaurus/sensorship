@@ -1,12 +1,12 @@
 import numpy as np
+import pandas as pd
 from more_itertools import run_length
 
 from src.utils.helpers import parse_data_points
 
-def aggregate(data, base="hours"):
+def aggregate(data: str, base: str="hours") -> str:
+    timestamp, temperature, rel_humidity = parse_data_points(data)
     if base == "hours":
-        timestamp, temperature, rel_humidity = parse_data_points(data)
-
         # Convert to hours
         hours = [value.split(" ")[0] + " " + value.split(" ")[1][0:2] + ":00:00" for value in timestamp]
         # Aggregate indices
