@@ -68,7 +68,7 @@ def predict():
 if __name__ == "__main__":
     main() # Call it once to test it works, even with long scheduler
     sched = BackgroundScheduler(daemon=True)
-    #sched.add_job(main, 'interval', seconds=5)
+    sched.add_job(main, 'interval', seconds=5)
     sched.start()
     plotter = PlotSensor(APP_TEST_DATA_PATH)
     app.run(host="localhost", port=8000, debug=True)
