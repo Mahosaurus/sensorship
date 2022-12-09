@@ -5,8 +5,9 @@ from flask import Flask, render_template, request, Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 
 from src.utils.aggregator import aggregate
+from src.utils.io_interaction import read_data, write_data
 from src.utils.graphics import PlotSensor, PlotPrediction
-from src.utils.predictor import make_lstm_prediction
+from src.utils.predictor import Predictor
 from src.config import API_DATA_PATH
 
 app = Flask(__name__)
@@ -34,34 +35,30 @@ def plot_png():
 
 @app.route("/del-data")
 def del_data():
-    with open(API_DATA_PATH, "r", encoding="utf-8") as filehandle:
-        data = filehandle.read()
+    data = read_data(API_DATA_PATH)
     os.remove(API_DATA_PATH)
     return "Deleted:\n" + data
 
 @app.route("/text-data")
 def text_data():
-    with open(API_DATA_PATH, "r", encoding="utf-8") as filehandle:
-        data = filehandle.read()
+    data = read_data(API_DATA_PATH)
     return data.split("\n")
 
 @app.route("/aggregate-data")
 def aggregate_data():
-    with open(API_DATA_PATH, "r", encoding="utf-8") as filehandle:
-        data = filehandle.read()
+    data = read_data(API_DATA_PATH)
     aggregated_data = aggregate(data)
-    with open(API_DATA_PATH, "w", encoding="utf-8") as filehandle:
-        data = filehandle.write(aggregated_data)
+    write_data(aggregated_data, API_DATA_PATH)
     return "Success"
 
 @app.route("/predict-data")
 def predict():
-    result = make_lstm_prediction()
+    predictor = Predictor(API_DATA_PATH)
+    result = predictor.make_lstm_prediction()
     pred_plotter = PlotPrediction(result)
     fig = pred_plotter.create_figure()
     output = io.BytesIO()
     FigureCanvasAgg(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
-
 if __name__ == '__main__':
     app.run()
