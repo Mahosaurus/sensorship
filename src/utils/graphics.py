@@ -1,26 +1,27 @@
 import datetime
 import math
 
+from typing import Tuple, List
+
 from matplotlib.figure import Figure
 import matplotlib.dates as dates
 import pandas as pd
 import numpy as np
 
-from src.utils.io_interaction import read_data
 from src.utils.helpers import parse_data_points
 
 class PlotSensor():
-    def __init__(self, source_path):
-        self.source_path = source_path
+    def __init__(self, data):
+        self.data = data
         self.colormap = {'Night': 'darkolivegreen',
                          'Morning': 'teal',
                          'Day': 'indigo',
                          'Afternoon':'maroon',
                          'Evening': "purple"}
 
-    def parse_data(self, data):
-        """ Parse date from sensor """
-        timestamp, temperature, rel_humidity = parse_data_points(data)
+    def parse_data(self) -> Tuple[List[str], List[str], List[float], List[float], List[float]]:
+        """ Parse data from sensor """
+        timestamp, temperature, rel_humidity = parse_data_points(self.data)
         time_of_day = [self.map_time_to_time_of_day(ts) for ts in timestamp] # Extract values
 
         conv_to_abs_humidity = lambda temp, humidity: (6.112*math.exp((17.67*temp)/(temp + 243.5)) * humidity * 2.1674) / (273.15+temp)
@@ -66,9 +67,16 @@ class PlotSensor():
 
     def create_figure(self):
         """ Creates figure from outcome.txt content """
-        data = read_data(self.source_path)
-        timestamp, time_of_day, temperature, rel_humidity, abs_humidity = self.parse_data(data)
+        timestamp, time_of_day, temperature, rel_humidity, abs_humidity = self.parse_data()
         idx = [dates.datestr2num(idx) for idx in timestamp] # Conversion to proper timestamp
+
+        # Shorten time range to last 100 entries
+        timestamp    = timestamp[-100:]
+        time_of_day  = time_of_day[-100:]
+        temperature  = temperature[-100:]
+        rel_humidity = rel_humidity[-100:]
+        abs_humidity = abs_humidity[-100:]
+        idx          = idx[-100:]
 
         interval_minor = self.determine_minor_x_axis_interval(timestamp)
         interval_major = self.determine_major_x_axis_interval(timestamp)
@@ -81,13 +89,13 @@ class PlotSensor():
         temperature_axis = fig.add_subplot(3, 1, 1)
         rel_humidity_axis = fig.add_subplot(3, 1, 2)
         abs_humidity_axis = fig.add_subplot(3, 1, 3)
-        self.create_plot("Temperature", temperature_axis, temperature, idx, time_of_day, interval_minor, interval_major)
-        self.create_plot("Rel Humidity", rel_humidity_axis, rel_humidity, idx, time_of_day, interval_minor, interval_major)
-        self.create_plot("Abs Humidity", abs_humidity_axis, abs_humidity, idx, time_of_day, interval_minor, interval_major)
+        self.generic_plot("Temperature", temperature_axis, temperature, idx, time_of_day, interval_minor, interval_major)
+        self.generic_plot("Rel Humidity", rel_humidity_axis, rel_humidity, idx, time_of_day, interval_minor, interval_major)
+        self.generic_plot("Abs Humidity", abs_humidity_axis, abs_humidity, idx, time_of_day, interval_minor, interval_major)
 
         return fig
 
-    def create_plot(self, title: str, axis, variable, idx: int, time_of_day, interval_minor, interval_major):
+    def generic_plot(self, title: str, axis, variable, idx: int, time_of_day, interval_minor, interval_major):
         """ Creates generic plot """
         for label in set(time_of_day):
             x = [i if tod == label else np.nan for i, tod in zip(idx, time_of_day)]

@@ -8,15 +8,14 @@ import torch
 
 import pandas as pd
 
-from src.utils.io_interaction import read_as_pandas
 from src.predictor.temperature_ffn_model import FFNModel
 from src.predictor.temperature_lstm_model import LSTMModel
 from src.config import get_repo_root
 from src.config import LSTM_INPUT_HISTORY
 
 class Predictor():
-    def __init__(self, source_path):
-        self.source_path = source_path
+    def __init__(self, data):
+        self.data = data
 
     @staticmethod
     def load_ffn_temp_model():
@@ -46,10 +45,10 @@ class Predictor():
     def make_24hrs() -> pd.DataFrame:
         """ Create timestamps for next 24hrs from now on"""
         current_time = datetime.datetime.now()
-        next_24hrs = [current_time]
+        next_24hrs = [current_time.strftime("%Y-%m-%d %H:%M:%S")]
         for i in range(1, 25):
-            next_24hrs.append(current_time + datetime.timedelta(hours=i))
-        data_parsed = pd.DataFrame.from_dict(next_24hrs)      
+            next_24hrs.append((current_time + datetime.timedelta(hours=i)).strftime("%Y-%m-%d %H:%M:%S"))
+        data_parsed = pd.DataFrame.from_dict(next_24hrs)
         data_parsed.columns = ["timestamp"]
         return data_parsed
 
@@ -61,8 +60,8 @@ class Predictor():
         # Add day of year
         timestamp_df["day_of_year"] = timestamp_df["timestamp"].dt.day_of_year
         # Add weekday
-        timestamp_df["weekday"] = timestamp_df["timestamp"].dt.weekday 
-        return timestamp_df   
+        timestamp_df["weekday"] = timestamp_df["timestamp"].dt.weekday
+        return timestamp_df
 
     def make_ffn_prediction(self) -> pd.DataFrame:
         timestamps_next_24hrs = self.make_24hrs()
@@ -78,39 +77,35 @@ class Predictor():
 
     def get_last_24hourly_avg(self) -> list:
         # Get last 24 hourly averages
-        data     = read_as_pandas(self.source_path)
-        times    = pd.DatetimeIndex(data.timestamp)
-        agg_data = data.groupby([times.day, times.hour]).temperature.mean()
+        times    = pd.DatetimeIndex(self.data.timestamp)
+        agg_data = self.data.groupby([times.day, times.hour]).temperature.mean()
         values   = agg_data.to_list()
         return values[-LSTM_INPUT_HISTORY:]
-        
 
     def make_lstm_prediction(self) -> pd.DataFrame:
         model, sc = self.load_lstm_temp_model()
         # This is just to make a data frame with right timestamps
         features = self.make_24hrs()
-        
+
         # Get values
         past_24hrs_values = self.get_last_24hourly_avg()
         cache = deque([], maxlen=LSTM_INPUT_HISTORY)
 
         for value in past_24hrs_values:
-            cache.append([value])            
+            cache.append([value])
         cache = [sc.transform(cache).tolist()]
 
         if len(cache[0]) < LSTM_INPUT_HISTORY:
             print("History too short")
             return None
-        # To do: There must be a better way....
+
         predictions = []
         for _, _ in features.iterrows():
             prediction = model(torch.Tensor(cache)).item()
             prediction_transformed = sc.inverse_transform([[prediction]])[0][0]
-            predictions.append(prediction_transformed)
+            predictions.append(round(prediction_transformed, 2))
             cache[0].append([prediction])
 
-        features["predictions"] = predictions
+        features["temperature"] = predictions
+        features["humidity"] = 0
         return features
-
-
-
