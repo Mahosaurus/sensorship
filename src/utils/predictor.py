@@ -107,5 +107,5 @@ class Predictor():
             cache[0].append([prediction])
 
         features["temperature"] = predictions
-        features["humidity"] = 0
+        features["humidity"] = pd.NA
         return features
