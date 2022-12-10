@@ -104,10 +104,10 @@ class Predictor():
         # To do: There must be a better way....
         predictions = []
         for _, _ in features.iterrows():
-            prediction = model(torch.Tensor(cache))
-            prediction_transformed = sc.inverse_transform(prediction.data.numpy())[0][0]
+            prediction = model(torch.Tensor(cache)).item()
+            prediction_transformed = sc.inverse_transform([[prediction]])[0][0]
             predictions.append(prediction_transformed)
-            cache[0].append(prediction)
+            cache[0].append([prediction])
 
         features["predictions"] = predictions
         return features
