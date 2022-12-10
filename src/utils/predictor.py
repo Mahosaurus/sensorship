@@ -45,7 +45,7 @@ class Predictor():
     def make_24hrs() -> pd.DataFrame:
         """ Create timestamps for next 24hrs from now on"""
         current_time = datetime.datetime.now()
-        next_24hrs = [current_time.strftime("%Y-%m-%d %H:%M:%S")]
+        next_24hrs = []
         for i in range(1, 25):
             next_24hrs.append((current_time + datetime.timedelta(hours=i)).strftime("%Y-%m-%d %H:%M:%S"))
         data_parsed = pd.DataFrame.from_dict(next_24hrs)
