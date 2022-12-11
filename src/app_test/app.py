@@ -32,12 +32,17 @@ def main():
 
 @app.route("/")
 def plot_png():
-    data = read_as_str_from_disk(APP_TEST_DATA_PATH)
+    # First aggregate
+    data = read_as_pandas_from_disk(APP_TEST_DATA_PATH)
+    aggregated_data = aggregate(data)
+    write_pandas_data_to_disk(aggregated_data, APP_TEST_DATA_PATH)    
     # Add predicted data
     pred_data = read_as_pandas_from_disk(APP_TEST_DATA_PATH)
     predictor = Predictor(pred_data)
     result = predictor.make_lstm_prediction()
     pred_data = pandas_to_str(result)
+    # Read existing data
+    data = read_as_str_from_disk(APP_TEST_DATA_PATH)
     # Concat
     data = data + pred_data
     # Plot

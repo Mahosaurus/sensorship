@@ -44,7 +44,7 @@ class PlotSensor():
         maxi = datetime.datetime.strptime(max(timestamp), "%Y-%m-%d %H:%M:%S").timestamp()
         time_diff_days = (maxi-mini)/(60*60*24) # Day Locator
         interval = math.ceil(time_diff_days/steps)
-        return interval        
+        return interval
 
     @staticmethod
     def map_time_to_time_of_day(timestamp: str) -> str:
@@ -93,6 +93,8 @@ class PlotSensor():
         self.generic_plot("Rel Humidity", rel_humidity_axis, rel_humidity, idx, time_of_day, interval_minor, interval_major)
         self.generic_plot("Abs Humidity", abs_humidity_axis, abs_humidity, idx, time_of_day, interval_minor, interval_major)
 
+        temperature_axis.axvline(x=idx[-24], c='r', linestyle='--')
+
         return fig
 
     def generic_plot(self, title: str, axis, variable, idx: int, time_of_day, interval_minor, interval_major):
@@ -113,21 +115,22 @@ class PlotSensor():
         axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y'))
 
 class PlotPrediction():
-    
+
     def __init__(self, data: pd.DataFrame):
-        self.data_subset = data[["timestamp", "predictions"]]
-        self.data_subset = self.data_subset.to_dict(orient="list")
+        data_subset = data[["timestamp", "temperature"]]
+        self.data_subset = data_subset.to_dict(orient="list")
 
     def create_figure(self):
         fig = Figure(figsize=(13, 8))
         axis = fig.add_subplot(1, 1, 1)
-        axis.plot(self.data_subset["timestamp"], self.data_subset["predictions"],
+        axis.plot(self.data_subset["timestamp"], self.data_subset["temperature"],
                     linestyle="--", dash_joinstyle="bevel", linewidth=0.6,
                     marker=".", markeredgewidth=0.2,
-                    fillstyle="full")  
+                    fillstyle="full")
         axis.xaxis.set_major_locator(dates.HourLocator(interval=6))    # every day
-        axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y %H:%M'))                    
-        axis.set_title("Predictions temperature next 24h", fontdict={"fontweight": "bold", "color": "darkblue"})      
+        axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y %H:%M'))
+        axis.set_title("Predictions temperature next 24h", fontdict={"fontweight": "bold", "color": "darkblue"})
+        axis.axvline(x=self.data_subset["timestamp"][-24], c='r', linestyle='--')
         return fig
 
 

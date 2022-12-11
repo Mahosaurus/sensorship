@@ -78,7 +78,7 @@ class Predictor():
     def get_last_24hourly_avg(self) -> list:
         # Get last 24 hourly averages
         times    = pd.DatetimeIndex(self.data.timestamp)
-        agg_data = self.data.groupby([times.day, times.hour]).temperature.mean()
+        agg_data = self.data.groupby([times.date, times.hour]).temperature.mean()
         values   = agg_data.to_list()
         return values[-LSTM_INPUT_HISTORY:]
 
@@ -98,7 +98,6 @@ class Predictor():
         if len(cache[0]) < LSTM_INPUT_HISTORY:
             print("History too short")
             return None
-
         predictions = []
         prediction = model(torch.Tensor(cache))
         for val in prediction[0]:
