@@ -100,11 +100,10 @@ class Predictor():
             return None
 
         predictions = []
-        for _, _ in features.iterrows():
-            prediction = model(torch.Tensor(cache)).item()
-            prediction_transformed = sc.inverse_transform([[prediction]])[0][0]
-            predictions.append(round(prediction_transformed, 2))
-            cache[0].append([prediction])
+        prediction = model(torch.Tensor(cache))
+        for val in prediction[0]:
+            prediction_transformed = sc.inverse_transform([[val.item()]])[0][0]
+            predictions.append(prediction_transformed)
 
         features["temperature"] = predictions
         features["humidity"] = 55

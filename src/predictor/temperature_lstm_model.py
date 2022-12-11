@@ -6,7 +6,7 @@ class LSTMModel(nn.Module):
     def __init__(self, seq_length=24):
         super(LSTMModel, self).__init__()
         
-        self.num_classes = 1
+        self.num_classes = seq_length
         self.num_layers = 1
         self.input_size = 1
         self.hidden_size = 20
@@ -14,7 +14,6 @@ class LSTMModel(nn.Module):
         
         self.lstm = nn.LSTM(input_size=self.input_size, hidden_size=self.hidden_size,
                             num_layers=self.num_layers, batch_first=True)
-        self.dropout = nn.Dropout1d(p=0.1)
         
         self.fc = nn.Linear(self.hidden_size, self.num_classes)
 
