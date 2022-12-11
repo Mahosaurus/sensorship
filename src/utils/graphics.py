@@ -94,6 +94,9 @@ class PlotSensor():
         self.generic_plot("Abs Humidity", abs_humidity_axis, abs_humidity, idx, time_of_day, interval_minor, interval_major)
 
         temperature_axis.axvline(x=idx[-24], c='r', linestyle='--')
+        rel_humidity_axis.axvline(x=idx[-24], c='r', linestyle='--')
+        abs_humidity_axis.axvline(x=idx[-24], c='r', linestyle='--')
+
 
         return fig
 
