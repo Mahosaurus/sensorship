@@ -9,13 +9,14 @@ class LSTMModel(nn.Module):
         self.num_classes = seq_length
         self.num_layers = 1
         self.input_size = 1
-        self.hidden_size = 20
+        self.hidden_size = 24
         self.seq_length = seq_length
         
         self.lstm = nn.LSTM(input_size=self.input_size, hidden_size=self.hidden_size,
                             num_layers=self.num_layers, batch_first=True)
         
-        self.fc = nn.Linear(self.hidden_size, self.num_classes)
+        self.fc1 = nn.Linear(self.hidden_size, self.num_classes)
+        self.fc2 = nn.Linear(self.hidden_size, self.num_classes)
 
     def forward(self, x):
         # Initializing hidden state for first input with zeros
@@ -28,8 +29,8 @@ class LSTMModel(nn.Module):
         # Reshaping the outputs in the shape of (batch_size, seq_length, hidden_size)
         # so that it can fit into the fully connected layer
         out = out[:, -1, :]
-        #out = self.dropout(out)
         # Convert the final state to our desired output shape (batch_size, output_dim)
-        out = self.fc(out)
+        out = torch.tanh(self.fc1(out))
+        out = torch.tanh(self.fc2(out))
 
         return out
