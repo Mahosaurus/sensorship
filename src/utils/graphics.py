@@ -29,7 +29,8 @@ class PlotSensor():
         return timestamp, time_of_day, temperature, rel_humidity, abs_humidity
 
     @staticmethod
-    def determine_minor_x_axis_interval(timestamp, steps=16) -> int:
+    def determine_minor_x_axis_interval(timestamp: List[str], steps: int=16) -> int:
+        if len(timestamp) < 2: raise ValueError
         """ Determine the interval to be 16 steps, as this fits font size with plot """
         mini = datetime.datetime.strptime(min(timestamp), "%Y-%m-%d %H:%M:%S").timestamp()
         maxi = datetime.datetime.strptime(max(timestamp), "%Y-%m-%d %H:%M:%S").timestamp()
@@ -38,8 +39,9 @@ class PlotSensor():
         return interval
 
     @staticmethod
-    def determine_major_x_axis_interval(timestamp, steps=16) -> int:
+    def determine_major_x_axis_interval(timestamp: List[str], steps: int=16) -> int:
         """ Determine the interval to be 16 steps, as this fits font size with plot """
+        if len(timestamp) < 2: raise ValueError
         mini = datetime.datetime.strptime(min(timestamp), "%Y-%m-%d %H:%M:%S").timestamp()
         maxi = datetime.datetime.strptime(max(timestamp), "%Y-%m-%d %H:%M:%S").timestamp()
         time_diff_days = (maxi-mini)/(60*60*24) # Day Locator
