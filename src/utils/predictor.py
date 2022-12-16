@@ -98,6 +98,7 @@ class Predictor():
         if len(cache[0]) < LSTM_INPUT_HISTORY:
             print("History too short")
             return None
+
         predictions = []
         prediction = model(torch.Tensor(cache))
         for val in prediction[0]:
