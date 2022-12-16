@@ -15,7 +15,7 @@ class LSTMModel(nn.Module):
         self.lstm = nn.LSTM(input_size=self.input_size, hidden_size=self.hidden_size,
                             num_layers=self.num_layers, batch_first=True)
         
-        self.fc1 = nn.Linear(self.hidden_size, self.num_classes)
+        self.fc1 = nn.Linear(self.hidden_size, self.hidden_size)
         self.fc2 = nn.Linear(self.hidden_size, self.num_classes)
 
     def forward(self, x):
