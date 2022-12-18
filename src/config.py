@@ -11,7 +11,7 @@ def get_repo_root() -> str:
 API_DATA_PATH = os.path.join("/home", "site", "outcome_remote.txt")
 APP_TEST_DATA_PATH = os.path.join(get_repo_root(), "outcome_local.txt")
 
-DATA_COLUMNS = ["timestamp", "remove", "temperature", "humidity"]
+DATA_COLUMNS = ["timestamp", "temperature", "humidity"]
 DATA_SEP = ","
 
 LSTM_INPUT_HISTORY = 24

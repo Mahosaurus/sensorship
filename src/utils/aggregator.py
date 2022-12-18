@@ -9,7 +9,6 @@ def aggregate(data: pd.DataFrame, base: str="hours") -> pd.DataFrame:
         agg_data = agg_data.reset_index()
         # Adding back expected columns
         agg_data["timestamp"] = agg_data["date"].astype(str) + " " + agg_data["hour"].astype(str) + ":00:00"
-        agg_data['remove'] = 'TO_REMOVE'
         agg_data.drop(["date", "hour"], axis=1, inplace=True)
         return agg_data
     else:
