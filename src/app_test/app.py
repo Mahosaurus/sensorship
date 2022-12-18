@@ -32,17 +32,13 @@ def main():
 
 @app.route("/")
 def plot_png():
-    # First aggregate
-    data = read_as_pandas_from_disk(APP_TEST_DATA_PATH)
-    aggregated_data = aggregate(data)
-    write_pandas_data_to_disk(aggregated_data, APP_TEST_DATA_PATH)    
+    # Read existing data
+    data = read_as_str_from_disk(APP_TEST_DATA_PATH)    
     # Add predicted data
     pred_data = read_as_pandas_from_disk(APP_TEST_DATA_PATH)
     predictor = Predictor(pred_data)
     result = predictor.make_lstm_prediction()
     pred_data = pandas_to_str(result)
-    # Read existing data
-    data = read_as_str_from_disk(APP_TEST_DATA_PATH)
     # Concat
     data = data + pred_data
     # Plot
@@ -76,8 +72,8 @@ def predict():
     return Response(output.getvalue(), mimetype='image/png')
     
 if __name__ == "__main__":
-    #main() # Call it once to test it works, even with long scheduler
-    #sched = BackgroundScheduler(daemon=True)
-    #sched.add_job(main, 'interval', seconds=5)
-    #sched.start()
+    main() # Call it once to test it works, even with long scheduler
+    sched = BackgroundScheduler(daemon=True)
+    sched.add_job(main, 'interval', seconds=5)
+    sched.start()
     app.run(host="localhost", port=8000, debug=True)

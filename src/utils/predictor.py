@@ -11,7 +11,7 @@ import pandas as pd
 from src.predictor.temperature_ffn_model import FFNModel
 from src.predictor.temperature_lstm_model import LSTMModel
 from src.config import get_repo_root
-from src.config import LSTM_INPUT_HISTORY
+from src.config import LSTM_INPUT_HISTORY, DATA_COLUMNS
 
 class Predictor():
     def __init__(self, data):
@@ -97,7 +97,7 @@ class Predictor():
 
         if len(cache[0]) < LSTM_INPUT_HISTORY:
             print("History too short")
-            return None
+            return pd.DataFrame(columns=DATA_COLUMNS)
 
         predictions = []
         prediction = model(torch.Tensor(cache))

@@ -95,10 +95,11 @@ class PlotSensor():
         self.generic_plot("Rel Humidity", rel_humidity_axis, rel_humidity, idx, time_of_day, interval_minor, interval_major)
         self.generic_plot("Abs Humidity", abs_humidity_axis, abs_humidity, idx, time_of_day, interval_minor, interval_major)
 
-        temperature_axis.axvline(x=idx[-24], c='r', linestyle='--')
-        rel_humidity_axis.axvline(x=idx[-24], c='r', linestyle='--')
-        abs_humidity_axis.axvline(x=idx[-24], c='r', linestyle='--')
+        cutoff = -1 if len(idx) < 25 else -24
 
+        temperature_axis.axvline(x=idx[cutoff], c='r', linestyle='--')
+        rel_humidity_axis.axvline(x=idx[cutoff], c='r', linestyle='--')
+        abs_humidity_axis.axvline(x=idx[cutoff], c='r', linestyle='--')
 
         return fig
 
