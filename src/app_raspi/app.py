@@ -34,8 +34,7 @@ def main():
 app = Flask(__name__)
 
 if __name__ == "__main__":
-    main()
     sched = BackgroundScheduler(daemon=True)
-    sched.add_job(main, 'interval', seconds=60*10)
+    sched.add_job(main, 'interval', seconds=60*60)
     sched.start()
     app.run(host="localhost", port=8000, debug=True)

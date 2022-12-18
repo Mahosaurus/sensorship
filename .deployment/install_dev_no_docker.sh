@@ -16,8 +16,6 @@ echo 'export LINK=http://127.0.0.1:5000/sensor-data' >> ${HOME}/.bash_profile
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 source "$SCRIPT_DIR"/venv/bin/activate
-cd src
-python setup.py develop
-cd ..
+python src/setup.py develop
 pip3 install -r requirements.txt
 

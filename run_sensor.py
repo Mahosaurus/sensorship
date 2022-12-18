@@ -1,4 +1,4 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-app_path="$SCRIPT_DIR"/app/app.py
+app_path="$SCRIPT_DIR"/src/app_raspi/app.py
 source "$SCRIPT_DIR"/venv/bin/activate
-python src/app/app.py
+python "$app_path"
