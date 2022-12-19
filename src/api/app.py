@@ -37,7 +37,7 @@ def plot_png():
     data = data + pred_data
     # Plot
     plotter = PlotSensor(data)    
-    fig = plotter.create_figure()
+    fig = plotter.create_figure(len(pred_data))
     output = io.BytesIO()
     FigureCanvasAgg(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')    
@@ -58,18 +58,7 @@ def aggregate_data():
     data = read_as_pandas_from_disk(API_DATA_PATH)
     aggregated_data = aggregate(data)
     write_pandas_data_to_disk(aggregated_data, API_DATA_PATH)
-    return "Success"    
-
-@app.route("/predict-data")
-def predict():
-    data = read_as_pandas_from_disk(API_DATA_PATH)
-    predictor = Predictor(data)
-    result = predictor.make_lstm_prediction()
-    pred_plotter = PlotPrediction(result)
-    fig = pred_plotter.create_figure()
-    output = io.BytesIO()
-    FigureCanvasAgg(fig).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
+    return "Success"
 
 if __name__ == '__main__':
     app.run()

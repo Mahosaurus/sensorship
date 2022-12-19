@@ -67,7 +67,7 @@ class PlotSensor():
         time_of_day = switch[hour]
         return time_of_day
 
-    def create_figure(self):
+        def create_figure(self, len_pred_data):
         """ Creates figure from outcome.txt content """
         timestamp, time_of_day, temperature, rel_humidity, abs_humidity = self.parse_data()
         idx = [dates.datestr2num(idx) for idx in timestamp] # Conversion to proper timestamp
@@ -94,8 +94,8 @@ class PlotSensor():
         self.generic_plot("Temperature", temperature_axis, temperature, idx, time_of_day, interval_minor, interval_major)
         self.generic_plot("Rel Humidity", rel_humidity_axis, rel_humidity, idx, time_of_day, interval_minor, interval_major)
         self.generic_plot("Abs Humidity", abs_humidity_axis, abs_humidity, idx, time_of_day, interval_minor, interval_major)
-
-        cutoff = -1 if len(idx) < 25 else -24
+        # If short or no predicted data -> -1
+        cutoff = -1 if len(idx) < 25 or len_pred_data == 0 else -24
 
         temperature_axis.axvline(x=idx[cutoff], c='r', linestyle='--')
         rel_humidity_axis.axvline(x=idx[cutoff], c='r', linestyle='--')

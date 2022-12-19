@@ -8,7 +8,6 @@ import torch
 
 import pandas as pd
 
-from src.predictor.temperature_ffn_model import FFNModel
 from src.predictor.temperature_lstm_model import LSTMModel
 from src.config import get_repo_root
 from src.config import LSTM_INPUT_HISTORY, DATA_COLUMNS
@@ -18,20 +17,9 @@ class Predictor():
         self.data = data
 
     @staticmethod
-    def load_ffn_temp_model():
-        path_to_model = os.path.join(get_repo_root(), "predictor", "temperature_ffn.model")
-        model = FFNModel()
-        if not os.path.isfile(path_to_model):
-            print("Model state dict not found")
-            return None
-        model.load_state_dict(torch.load(path_to_model))
-        model.eval()
-        return model
-
-    @staticmethod
-    def load_lstm_temp_model():
-        path_to_model = os.path.join(get_repo_root(), "predictor", "temperature_lstm.model")
-        path_to_preproc = os.path.join(get_repo_root(), "predictor", "lstm_preproc.joblib")
+    def load_model(flavour):
+        path_to_model = os.path.join(get_repo_root(), "predictor", f"{flavour}_lstm.model")
+        path_to_preproc = os.path.join(get_repo_root(), "predictor", f"{flavour}_preproc.joblib")
         model = LSTMModel()
         if not os.path.isfile(path_to_model):
             print("Model state dict not found")
@@ -63,48 +51,61 @@ class Predictor():
         timestamp_df["weekday"] = timestamp_df["timestamp"].dt.weekday
         return timestamp_df
 
-    def make_ffn_prediction(self) -> pd.DataFrame:
-        timestamps_next_24hrs = self.make_24hrs()
-        features = self.add_features(timestamps_next_24hrs)
-        model = self.load_ffn_temp_model()
-        predictions = []
-        for _, row in features.iterrows():
-            row["hour"] = float(row["hour"]) # Convert to float
-            prediction = model(torch.tensor([row["hour"], row["weekday"], row["day_of_year"]]))
-            predictions.append(round(prediction.tolist()[0], 2))
-        features["predictions"] = predictions
-        return features
-
-    def get_last_24hourly_avg(self) -> list:
+    def get_last_24hourly_avg(self, flavour) -> list:
         # Get last 24 hourly averages
         times    = pd.DatetimeIndex(self.data.timestamp)
-        agg_data = self.data.groupby([times.date, times.hour]).temperature.mean()
+        if flavour == "temperature":
+            agg_data = self.data.groupby([times.date, times.hour]).temperature.mean()
+        elif flavour == "humidity":
+            agg_data = self.data.groupby([times.date, times.hour]).humidity.mean()
         values   = agg_data.to_list()
         return values[-LSTM_INPUT_HISTORY:]
 
     def make_lstm_prediction(self) -> pd.DataFrame:
-        model, sc = self.load_lstm_temp_model()
+        model_tempe, sc_tempe = self.load_model(flavour="temperature")
+        model_humid, sc_humid = self.load_model(flavour="humidity")
         # This is just to make a data frame with right timestamps
         features = self.make_24hrs()
 
-        # Get values
-        past_24hrs_values = self.get_last_24hourly_avg()
+        # Get historical values
+        past_24hrs_values = self.get_last_24hourly_avg(flavour="temperature")
+
+        # Temperature
         cache = deque([], maxlen=LSTM_INPUT_HISTORY)
 
         for value in past_24hrs_values:
             cache.append([value])
-        cache = [sc.transform(cache).tolist()]
+        cache = [sc_tempe.transform(cache).tolist()]
+        if len(cache[0]) < LSTM_INPUT_HISTORY:
+            print("History too short")
+            return pd.DataFrame(columns=DATA_COLUMNS)
+
+        predictions = []
+        prediction = model_tempe(torch.Tensor(cache))
+        for val in prediction[0]:
+            prediction_transformed = sc_tempe.inverse_transform([[val.item()]])[0][0]
+            predictions.append(prediction_transformed)
+        features["temperature"] = predictions
+
+        # Get historical values
+        past_24hrs_values = self.get_last_24hourly_avg(flavour="temperature")
+
+        # Humidity
+        cache = deque([], maxlen=LSTM_INPUT_HISTORY)
+
+        for value in past_24hrs_values:
+            cache.append([value])
+        cache = [sc_humid.transform(cache).tolist()]
 
         if len(cache[0]) < LSTM_INPUT_HISTORY:
             print("History too short")
             return pd.DataFrame(columns=DATA_COLUMNS)
 
         predictions = []
-        prediction = model(torch.Tensor(cache))
+        prediction = model_humid(torch.Tensor(cache))
         for val in prediction[0]:
-            prediction_transformed = sc.inverse_transform([[val.item()]])[0][0]
+            prediction_transformed = sc_humid.inverse_transform([[val.item()]])[0][0]
             predictions.append(prediction_transformed)
+        features["humidity"] = predictions
 
-        features["temperature"] = predictions
-        features["humidity"] = 55
         return features
