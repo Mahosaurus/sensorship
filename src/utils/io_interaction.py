@@ -28,7 +28,7 @@ def pandas_to_str(data: pd.DataFrame):
     """ Converts Pandas representation to string """
     out_data = ""
     for i in data.itertuples():
-        out_data += f"{i.timestamp}, TO_REMOVE, {i.temperature}, {i.humidity}\n"
+        out_data += f"{i.timestamp}, {i.temperature}, {i.humidity}\n"
     return out_data
 
 def str_to_pandas(data: str) -> pd.DataFrame:

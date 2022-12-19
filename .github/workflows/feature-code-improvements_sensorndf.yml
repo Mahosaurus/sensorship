@@ -8,7 +8,7 @@ on:
   push:
     branches:
       - main
-      - feature/lstm-model
+      - feature/data-ingestion-fix
   workflow_dispatch:
 
 jobs:

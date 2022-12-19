@@ -41,6 +41,6 @@ def get_mock_data() -> Tuple[str, str]:
         data = filehandle.read()
     data = data.split("\n")
     temperature = random.choice(data)
-    humidity = str(int(random.choice(data))+5*4)
+    humidity = str(float(random.choice(data))+5*4)
 
     return str(temperature), str(humidity)
