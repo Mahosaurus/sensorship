@@ -43,7 +43,7 @@ def plot_png():
     data = data + pred_data
     # Plot
     plotter = PlotSensor(data)    
-    fig = plotter.create_figure()
+    fig = plotter.create_figure(len(pred_data))
     output = io.BytesIO()
     FigureCanvasAgg(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
@@ -59,21 +59,10 @@ def aggregate_data():
     aggregated_data = aggregate(data)
     write_pandas_data_to_disk(aggregated_data, APP_TEST_DATA_PATH)
     return "Success"
-
-@app.route("/predict-data")
-def predict():
-    data = read_as_pandas_from_disk(APP_TEST_DATA_PATH)
-    predictor = Predictor(data)
-    result = predictor.make_lstm_prediction()
-    pred_plotter = PlotPrediction(result)
-    fig = pred_plotter.create_figure()
-    output = io.BytesIO()
-    FigureCanvasAgg(fig).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
     
 if __name__ == "__main__":
-    main() # Call it once to test it works, even with long scheduler
-    sched = BackgroundScheduler(daemon=True)
-    sched.add_job(main, 'interval', seconds=5)
-    sched.start()
+    #main() # Call it once to test it works, even with long scheduler
+    #sched = BackgroundScheduler(daemon=True)
+    #sched.add_job(main, 'interval', seconds=5)
+    #sched.start()
     app.run(host="localhost", port=8000, debug=True)
