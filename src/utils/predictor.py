@@ -88,7 +88,7 @@ class Predictor():
         features["temperature"] = predictions
 
         # Get historical values
-        past_24hrs_values = self.get_last_24hourly_avg(flavour="temperature")
+        past_24hrs_values = self.get_last_24hourly_avg(flavour="humidity")
 
         # Humidity
         cache = deque([], maxlen=LSTM_INPUT_HISTORY)
