@@ -67,7 +67,7 @@ class PlotSensor():
         time_of_day = switch[hour]
         return time_of_day
 
-        def create_figure(self, len_pred_data):
+    def create_figure(self, len_pred_data):
         """ Creates figure from outcome.txt content """
         timestamp, time_of_day, temperature, rel_humidity, abs_humidity = self.parse_data()
         idx = [dates.datestr2num(idx) for idx in timestamp] # Conversion to proper timestamp
