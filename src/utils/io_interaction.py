@@ -3,7 +3,7 @@ import pandas as pd
 from src.config import DATA_COLUMNS, DATA_SEP
 
 # Custom Format (no header) str vs. Pandas DF
-# 2022-11-21 19:00:00, TO_REMOVE, 18.75, 56.84
+# 2022-11-21 19:00:00, 18.75, 56.84
 
 def read_as_str_from_disk(path: str) -> str:
     with open(path, "r", encoding="utf-8") as filehandle:
