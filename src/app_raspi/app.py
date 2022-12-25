@@ -37,4 +37,5 @@ if __name__ == "__main__":
     sched = BackgroundScheduler(daemon=True)
     sched.add_job(main, 'interval', seconds=60*60)
     sched.start()
-    app.run(host="localhost", port=8000, debug=True)
+    # Debug Mode False, as otherwise there will be two instances of the scheduler
+    app.run(host="localhost", port=8000, debug=False)
