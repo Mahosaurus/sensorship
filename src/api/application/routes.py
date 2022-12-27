@@ -1,6 +1,6 @@
 
 
-from flask import Response, render_template
+from flask import Response, render_template, request
 from flask import current_app as app
 
 from src.utils.io_interaction import read_as_str_from_disk, read_as_pandas_from_disk, write_pandas_data_to_disk, pandas_to_str
@@ -16,10 +16,24 @@ def home():
         body="This is a homepage served with Flask.",
     )
 
+@app.route('/sensor-data', methods=['PUT'])
+def get_data():
+    if request.method == 'PUT':
+        data = request.json
+        with open(app.config["DATA_PATH"], "a", encoding="utf-8") as filehandle:
+            filehandle.write(data["data"])
+        return f"Received {data}"    
+
 @app.route("/text-data")
 def text_data():
     data = read_as_str_from_disk(app.config["DATA_PATH"])
     return data.split("\n")
+
+@app.route("/del-data")
+def del_data():
+    data = read_as_str_from_disk(app.config["DATA_PATH"])
+    #os.remove(API_DATA_PATH)
+    return "Deleted:\n" + data    
 
 from src.utils.aggregator import aggregate
 
