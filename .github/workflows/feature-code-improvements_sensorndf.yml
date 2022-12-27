@@ -66,8 +66,10 @@ jobs:
         run: ls -R
         working-directory: .
       
-      - env:
-        DEPLOY_ENV: "production"
+      - name: Step Env var
+        run: echo "Setting env to production"
+        env:
+          DEPLOY_ENV: "production"
          
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
