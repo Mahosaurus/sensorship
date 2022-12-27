@@ -16,7 +16,6 @@ def home():
         body="This is a homepage served with Flask.",
     )
 
-
 @app.route("/text-data")
 def text_data():
     data = read_as_str_from_disk(app.config["DATA_PATH"])
@@ -53,4 +52,3 @@ def plot_png():
     output = io.BytesIO()
     FigureCanvasAgg(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
-
