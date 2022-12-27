@@ -3,8 +3,8 @@ import os
 from src.utils.helpers import get_repo_root
 
 if os.environ.get("DEPLOY_ENV") == "production":
-    ENV = 'production'
-    FLASK_ENV = 'production'
+    ENV = 'development'
+    FLASK_ENV = 'development'
     DEBUG = False
     Testing = False
     DATA_PATH = os.path.join("/home", "site", "outcome_remote.txt")
