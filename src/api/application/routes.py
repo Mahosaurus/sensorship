@@ -54,21 +54,3 @@ def plot_png():
     FigureCanvasAgg(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
-import os
-import time
-from src.utils.helpers import get_repo_root
-
-def save_to_file(out_str):
-    """ Write metrics to file """
-    with open(app.config["DATA_PATH"], "a", encoding="utf-8") as filehandle:
-        filehandle.write(out_str)
-
-from src.utils.helpers import compile_data_point
-from src.utils.tempsensor import get_mock_data
-
-def main():
-    """ Function that gets called by scheduler. """
-    temperature, humidity = get_mock_data()
-    current_ts = time.time()
-    out_str = compile_data_point(current_ts, temperature, humidity)
-    save_to_file(out_str)    
