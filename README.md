@@ -1,4 +1,4 @@
 # sensorship
-Run create_env.sh
-app runs locally on your raspi
-api is deployed on azure
+-> Api (should include Api-Test)
+-> App Raspi
+-> ML (predictor)

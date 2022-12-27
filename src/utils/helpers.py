@@ -1,4 +1,5 @@
 import datetime
+import os
 
 from typing import Tuple, List
 
@@ -19,3 +20,11 @@ def parse_data_points(data: str) -> Tuple[List[str], List[float], List[float]]:
     temperature = [float(val.split(",")[1]) for val in data] # Extract values
     rel_humidity = [float(val.split(",")[2]) for val in data] # Extract values
     return timestamp, temperature, rel_humidity
+
+def get_repo_root() -> str:
+    """
+    Returns the absolute path to the root of the  repository
+    specific to the system the code is run on.
+    """
+    path_to_this_file = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + "/"
+    return path_to_this_file

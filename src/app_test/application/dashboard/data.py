@@ -1,10 +1,11 @@
 
 """Prepare data for Plotly Dash."""
-import numpy as np
-import pandas as pd
 import os
 
-from src.config import get_repo_root
+import numpy as np
+import pandas as pd
+
+from src.utils.helpers import get_repo_root
 
 def create_dataframe():
     """Create Pandas DataFrame from local CSV."""

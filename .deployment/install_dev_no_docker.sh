@@ -18,4 +18,5 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 source "$SCRIPT_DIR"/venv/bin/activate
 python src/setup.py develop
 pip3 install -r requirements.txt
+pip3 install -r src/api/requirements.txt
 

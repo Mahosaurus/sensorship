@@ -6,7 +6,7 @@ from typing import Tuple
 
 import smbus
 
-from config import get_repo_root
+from src.utils.helpers import get_repo_root
 
 address = 0x38 #Put your device's address here
 

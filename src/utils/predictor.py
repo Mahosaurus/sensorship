@@ -9,7 +9,7 @@ import torch
 import pandas as pd
 
 from src.predictor.temperature_lstm_model import LSTMModel
-from src.config import get_repo_root
+from src.utils.helpers import get_repo_root
 from src.config import LSTM_INPUT_HISTORY, DATA_COLUMNS
 
 class Predictor():

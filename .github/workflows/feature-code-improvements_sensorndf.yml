@@ -65,7 +65,9 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R
         working-directory: .
-
+      
+      - env:
+        DEPLOY_ENV: "production"
          
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2

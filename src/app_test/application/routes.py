@@ -1,9 +1,9 @@
 
-from src.utils.io_interaction import read_as_str_from_disk, read_as_pandas_from_disk, write_pandas_data_to_disk, pandas_to_str
-from src.config import APP_TEST_DATA_PATH
 
 from flask import Response, render_template
 from flask import current_app as app
+
+from src.utils.io_interaction import read_as_str_from_disk, read_as_pandas_from_disk, write_pandas_data_to_disk, pandas_to_str
 
 @app.route("/")
 def home():
@@ -56,7 +56,7 @@ def plot_png():
 
 import os
 import time
-from src.config import get_repo_root
+from src.utils.helpers import get_repo_root
 
 def save_to_file(out_str):
     """ Write metrics to file """
