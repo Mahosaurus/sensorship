@@ -20,7 +20,7 @@ def init_dashboard(server):
     )
 
     # Load DataFrame
-    df = create_dataframe()
+    df = create_dataframe(server.config["CSV_PATH"])
 
     # Custom HTML layout
     dash_app.index_string = html_layout
