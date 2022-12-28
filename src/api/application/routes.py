@@ -1,5 +1,6 @@
 
 import io
+import os
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from src.utils.graphics import PlotSensor
 from src.utils.predictor import Predictor

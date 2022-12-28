@@ -8,19 +8,18 @@ from .layout import html_layout
 
 def init_dashboard(server):
     """Create a Plotly Dash dashboard."""
+    print("Hey 1")
     dash_app = dash.Dash(
         server=server,
-        routes_pathname_prefix="/dashboard/",
-        external_stylesheets=[
-            "/static/dist/css/styles.css",
-            "https://fonts.googleapis.com/css?family=Lato",
-        ],
+        routes_pathname_prefix="/dashboard/"
     )
-
+    print("Hey 2")
     data = load_and_prepare_data(server)
+    print("Hey 3")
     # Custom HTML layout
     dash_app.index_string = html_layout
     # Create Layout
+    print("Hey 4")
     dash_app.layout = html.Div(
         children=[
             dcc.Graph(
@@ -94,4 +93,5 @@ def init_dashboard(server):
         ],
         id="dash-container",
     )
+    print("Hey 5")
     return dash_app.server
