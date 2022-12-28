@@ -1,4 +1,10 @@
 
+import io
+from matplotlib.backends.backend_agg import FigureCanvasAgg
+from src.utils.graphics import PlotSensor
+from src.utils.predictor import Predictor
+
+from src.utils.aggregator import aggregate
 
 from flask import Response, render_template, request
 from flask import current_app as app
@@ -32,10 +38,9 @@ def text_data():
 @app.route("/del-data")
 def del_data():
     data = read_as_str_from_disk(app.config["DATA_PATH"])
-    #os.remove(API_DATA_PATH)
+    os.remove(app.config["DATA_PATH"])
     return "Deleted:\n" + data    
 
-from src.utils.aggregator import aggregate
 
 @app.route("/aggregate-data")
 def aggregate_data():
@@ -43,11 +48,6 @@ def aggregate_data():
     aggregated_data = aggregate(data)
     write_pandas_data_to_disk(aggregated_data, app.config["DATA_PATH"])
     return "Success"
-
-import io
-from matplotlib.backends.backend_agg import FigureCanvasAgg
-from src.utils.graphics import PlotSensor
-from src.utils.predictor import Predictor
 
 @app.route("/show-data")
 def plot_png():

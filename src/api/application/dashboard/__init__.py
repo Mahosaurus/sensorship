@@ -1,67 +1,97 @@
 """Instantiate a Dash app."""
 import dash
-from dash import dash_table
 from dash import dcc
 from dash import html
 
-from .data import create_dataframe
+from .data import load_and_prepare_data
 from .layout import html_layout
-
 
 def init_dashboard(server):
     """Create a Plotly Dash dashboard."""
     dash_app = dash.Dash(
         server=server,
-        routes_pathname_prefix="/dashapp/",
+        routes_pathname_prefix="/dashboard/",
         external_stylesheets=[
             "/static/dist/css/styles.css",
             "https://fonts.googleapis.com/css?family=Lato",
         ],
     )
 
-    # Load DataFrame
-    df = create_dataframe(server.config["CSV_PATH"])
-
+    data = load_and_prepare_data(server)
     # Custom HTML layout
     dash_app.index_string = html_layout
-
     # Create Layout
     dash_app.layout = html.Div(
         children=[
             dcc.Graph(
-                id="histogram-graph",
+                id="temperature-graph",
                 figure={
                     "data": [
                         {
-                            "x": df["complaint_type"],
-                            "text": df["complaint_type"],
-                            "customdata": df["key"],
-                            "name": "311 Calls by region.",
-                            "type": "histogram",
+                            "x": data["timestamp"],
+                            "y": data["temperature"],
+                            # https://plotly.com/javascript/reference/#scatter-line
+                            "line": {
+                                'color': 'blue',
+                                'dash': 'dashdot',
+                                'width': 2
+                                }
                         }
                     ],
+                    # TODO: add_hline
                     "layout": {
-                        "title": "NYC 311 Calls category.",
+                        "title": "<b>Temperature</b>",
                         "height": 500,
                         "padding": 150,
                     },
                 },
             ),
-            create_data_table(df),
+            dcc.Graph(
+                id="rel-humidity-graph",
+                figure={
+                    "data": [
+                        {
+                            "x": data["timestamp"],
+                            "y": data["humidity"],               
+                            # https://plotly.com/javascript/reference/#scatter-line
+                            "line": {
+                                'color': 'blue',
+                                'dash': 'dashdot',
+                                'width': 2
+                                }
+                        }
+                    ],
+                    "layout": {
+                        "title": "<b>Relative Humidity</b>",
+                        "height": 500,
+                        "padding": 150,
+                    },                    
+                },
+            ),
+            dcc.Graph(
+                id="abs-humidity-graph",
+                figure={
+                    "data": [
+                        {
+                            "x": data["timestamp"],
+                            "y": data["abs_humidity"],
+                            # https://plotly.com/javascript/reference/#scatter-line
+                            "line": {
+                                'color': 'blue',
+                                'dash': 'dashdot',
+                                'width': 2
+                                }                            
+                        }
+                    ],
+                    "layout": {
+                        "title": "<b>Absolute Humidity</b>",
+                        "height": 500,
+                        "padding": 150,
+                        "color": "blue"
+                    },                    
+                },
+            )
         ],
         id="dash-container",
     )
     return dash_app.server
-
-
-def create_data_table(df):
-    """Create Dash datatable from Pandas DataFrame."""
-    table = dash_table.DataTable(
-        id="database-table",
-        columns=[{"name": i, "id": i} for i in df.columns],
-        data=df.to_dict("records"),
-        sort_action="native",
-        sort_mode="native",
-        page_size=300,
-    )
-    return table

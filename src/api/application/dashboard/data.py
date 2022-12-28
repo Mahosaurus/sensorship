@@ -1,16 +1,20 @@
 
 """Prepare data for Plotly Dash."""
-import os
+import math
 
-import numpy as np
-import pandas as pd
+from src.utils.io_interaction import read_as_pandas_from_disk
+from src.utils.predictor import Predictor
 
-def create_dataframe(path):
-    """Create Pandas DataFrame from local CSV."""
-    df = pd.read_csv(path, parse_dates=["created"])
-    df["created"] = df["created"].dt.date
-    df.drop(columns=["incident_zip"], inplace=True)
-    num_complaints = df["complaint_type"].value_counts()
-    to_remove = num_complaints[num_complaints <= 30].index
-    df.replace(to_remove, np.nan, inplace=True)
-    return df
+def load_and_prepare_data(server):
+    # Load DataFrame
+    data = read_as_pandas_from_disk(server.config["DATA_PATH"])    
+    # Add predicted data
+    pred_data = read_as_pandas_from_disk(server.config["DATA_PATH"])
+    predictor = Predictor(pred_data)
+    pred_data = predictor.make_lstm_prediction()
+    # Concat the two
+    data = data.append(pred_data, ignore_index=True)
+    # Add Abs Humidity
+    convert_rel_to_abs_humidity = lambda x: (6.112*math.exp((17.67*x["temperature"])/(x["temperature"] + 243.5)) * x["humidity"] * 2.1674) / (273.15+x["temperature"])
+    data["abs_humidity"] = data.apply(convert_rel_to_abs_humidity, axis=1)
+    return data

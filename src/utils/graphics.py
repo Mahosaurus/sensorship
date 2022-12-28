@@ -120,24 +120,3 @@ class PlotSensor():
         axis.xaxis.set_major_locator(dates.DayLocator(interval=interval_major))    # every day
         axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y'))
 
-class PlotPrediction():
-
-    def __init__(self, data: pd.DataFrame):
-        data_subset = data[["timestamp", "temperature"]]
-        self.data_subset = data_subset.to_dict(orient="list")
-
-    def create_figure(self):
-        fig = Figure(figsize=(13, 8))
-        axis = fig.add_subplot(1, 1, 1)
-        axis.plot(self.data_subset["timestamp"], self.data_subset["temperature"],
-                    linestyle="--", dash_joinstyle="bevel", linewidth=0.6,
-                    marker=".", markeredgewidth=0.2,
-                    fillstyle="full")
-        axis.xaxis.set_major_locator(dates.HourLocator(interval=6))    # every day
-        axis.xaxis.set_major_formatter(dates.DateFormatter('\n%d-%m-%Y %H:%M'))
-        axis.set_title("Predictions temperature next 24h", fontdict={"fontweight": "bold", "color": "darkblue"})
-        axis.axvline(x=self.data_subset["timestamp"][-24], c='r', linestyle='--')
-        return fig
-
-
-
