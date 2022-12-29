@@ -93,5 +93,6 @@ def init_dashboard(server):
         ],
         id="dash-container",
     )
+    print(dash_app.layout)
     print("Hey 5")
     return dash_app.server
