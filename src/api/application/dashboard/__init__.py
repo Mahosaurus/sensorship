@@ -16,7 +16,6 @@ def init_dashboard(server):
     # Custom HTML layout
     dash_app.index_string = html_layout
     # Create Layout
-    print(data.dtypes)
     dash_app.layout = html.Div(
         children=[
             dcc.Graph(
@@ -90,5 +89,4 @@ def init_dashboard(server):
         ],
         id="dash-container",
     )
-    print("Hey 5")
     return dash_app.server
