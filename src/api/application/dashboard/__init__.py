@@ -42,51 +42,51 @@ def init_dashboard(server):
                     },
                 },
             ),
-            # dcc.Graph(
-            #     id="rel-humidity-graph",
-            #     figure={
-            #         "data": [
-            #             {
-            #                 "x": data["timestamp"],
-            #                 "y": data["humidity"],               
-            #                 # https://plotly.com/javascript/reference/#scatter-line
-            #                 "line": {
-            #                     'color': 'blue',
-            #                     'dash': 'dashdot',
-            #                     'width': 2
-            #                     }
-            #             }
-            #         ],
-            #         "layout": {
-            #             "title": "<b>Relative Humidity</b>",
-            #             "height": 500,
-            #             "padding": 150,
-            #         },                    
-            #     },
-            # ),
-            # dcc.Graph(
-            #     id="abs-humidity-graph",
-            #     figure={
-            #         "data": [
-            #             {
-            #                 "x": data["timestamp"],
-            #                 "y": data["abs_humidity"],
-            #                 # https://plotly.com/javascript/reference/#scatter-line
-            #                 "line": {
-            #                     'color': 'blue',
-            #                     'dash': 'dashdot',
-            #                     'width': 2
-            #                     }                            
-            #             }
-            #         ],
-            #         "layout": {
-            #             "title": "<b>Absolute Humidity</b>",
-            #             "height": 500,
-            #             "padding": 150,
-            #             "color": "blue"
-            #         },                    
-            #     },
-            # )
+            dcc.Graph(
+                id="rel-humidity-graph",
+                figure={
+                    "data": [
+                        {
+                            "x": data["timestamp"],
+                            "y": data["humidity"],               
+                            # https://plotly.com/javascript/reference/#scatter-line
+                            "line": {
+                                'color': 'blue',
+                                'dash': 'dashdot',
+                                'width': 2
+                                }
+                        }
+                    ],
+                    "layout": {
+                        "title": "<b>Relative Humidity</b>",
+                        "height": 500,
+                        "padding": 150,
+                    },                    
+                },
+            ),
+            dcc.Graph(
+                id="abs-humidity-graph",
+                figure={
+                    "data": [
+                        {
+                            "x": data["timestamp"],
+                            "y": data["abs_humidity"],
+                            # https://plotly.com/javascript/reference/#scatter-line
+                            "line": {
+                                'color': 'blue',
+                                'dash': 'dashdot',
+                                'width': 2
+                                }                            
+                        }
+                    ],
+                    "layout": {
+                        "title": "<b>Absolute Humidity</b>",
+                        "height": 500,
+                        "padding": 150,
+                        "color": "blue"
+                    },                    
+                },
+            )
         ],
         id="dash-container",
     )
