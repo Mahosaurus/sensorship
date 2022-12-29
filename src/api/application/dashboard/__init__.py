@@ -27,7 +27,7 @@ def init_dashboard(server):
                 figure={
                     "data": [
                         {
-                            "x": data["humidity"],
+                            "x": data["timestamp"],
                             "y": data["temperature"],
                             # https://plotly.com/javascript/reference/#scatter-line
                             "line": {
