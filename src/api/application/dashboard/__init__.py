@@ -27,7 +27,7 @@ def init_dashboard(server):
                 figure={
                     "data": [
                         {
-                            "x": data["timestamp"],
+                            "x": data["humidity"],
                             "y": data["temperature"],
                             # https://plotly.com/javascript/reference/#scatter-line
                             "line": {
@@ -45,54 +45,53 @@ def init_dashboard(server):
                     },
                 },
             ),
-            dcc.Graph(
-                id="rel-humidity-graph",
-                figure={
-                    "data": [
-                        {
-                            "x": data["timestamp"],
-                            "y": data["humidity"],               
-                            # https://plotly.com/javascript/reference/#scatter-line
-                            "line": {
-                                'color': 'blue',
-                                'dash': 'dashdot',
-                                'width': 2
-                                }
-                        }
-                    ],
-                    "layout": {
-                        "title": "<b>Relative Humidity</b>",
-                        "height": 500,
-                        "padding": 150,
-                    },                    
-                },
-            ),
-            dcc.Graph(
-                id="abs-humidity-graph",
-                figure={
-                    "data": [
-                        {
-                            "x": data["timestamp"],
-                            "y": data["abs_humidity"],
-                            # https://plotly.com/javascript/reference/#scatter-line
-                            "line": {
-                                'color': 'blue',
-                                'dash': 'dashdot',
-                                'width': 2
-                                }                            
-                        }
-                    ],
-                    "layout": {
-                        "title": "<b>Absolute Humidity</b>",
-                        "height": 500,
-                        "padding": 150,
-                        "color": "blue"
-                    },                    
-                },
-            )
+            # dcc.Graph(
+            #     id="rel-humidity-graph",
+            #     figure={
+            #         "data": [
+            #             {
+            #                 "x": data["timestamp"],
+            #                 "y": data["humidity"],               
+            #                 # https://plotly.com/javascript/reference/#scatter-line
+            #                 "line": {
+            #                     'color': 'blue',
+            #                     'dash': 'dashdot',
+            #                     'width': 2
+            #                     }
+            #             }
+            #         ],
+            #         "layout": {
+            #             "title": "<b>Relative Humidity</b>",
+            #             "height": 500,
+            #             "padding": 150,
+            #         },                    
+            #     },
+            # ),
+            # dcc.Graph(
+            #     id="abs-humidity-graph",
+            #     figure={
+            #         "data": [
+            #             {
+            #                 "x": data["timestamp"],
+            #                 "y": data["abs_humidity"],
+            #                 # https://plotly.com/javascript/reference/#scatter-line
+            #                 "line": {
+            #                     'color': 'blue',
+            #                     'dash': 'dashdot',
+            #                     'width': 2
+            #                     }                            
+            #             }
+            #         ],
+            #         "layout": {
+            #             "title": "<b>Absolute Humidity</b>",
+            #             "height": 500,
+            #             "padding": 150,
+            #             "color": "blue"
+            #         },                    
+            #     },
+            # )
         ],
         id="dash-container",
     )
-    print(dash_app.layout)
     print("Hey 5")
     return dash_app.server
