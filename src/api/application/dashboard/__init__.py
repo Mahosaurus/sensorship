@@ -41,6 +41,14 @@ def init_dashboard(server):
                     },
                 },
             ),
+            dcc.Slider(
+                id='temp-slider',
+                min=data['slider'].min(),
+                max=data['slider'].max(),
+                value=data['slider'].min(),
+                marks={str(year): str(year) for year in data['slider'].unique()},
+                step=None
+            ),            
             dcc.Graph(
                 id="rel-humidity-graph",
                 figure={
@@ -63,6 +71,14 @@ def init_dashboard(server):
                     },                    
                 },
             ),
+            dcc.Slider(
+                id='humidity-slider',
+                min=data['slider'].min(),
+                max=data['slider'].max(),
+                value=data['slider'].min(),
+                marks={str(year): str(year) for year in data['slider'].unique()},
+                step=None
+            ),             
             dcc.Graph(
                 id="abs-humidity-graph",
                 figure={

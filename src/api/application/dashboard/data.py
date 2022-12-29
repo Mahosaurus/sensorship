@@ -1,7 +1,8 @@
 
 """Prepare data for Plotly Dash."""
 import math
-import pandas as pd
+import numpy as np
+import pandas as pd    
 from src.utils.io_interaction import read_as_pandas_from_disk
 from src.utils.predictor import Predictor
 
@@ -19,4 +20,6 @@ def load_and_prepare_data(server):
     data["abs_humidity"] = data.apply(convert_rel_to_abs_humidity, axis=1)
     # Need this, as Dash cannot deal with objects
     data['timestamp'] = pd.to_datetime(data['timestamp'], format='%Y/%m/%d %H:%M:%S')
+    # Need this for slider
+    data['slider'] = data['timestamp'].astype(np.int64) // 1e9
     return data
