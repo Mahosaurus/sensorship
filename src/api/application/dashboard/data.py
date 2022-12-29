@@ -1,7 +1,7 @@
 
 """Prepare data for Plotly Dash."""
 import math
-
+import pandas as pd
 from src.utils.io_interaction import read_as_pandas_from_disk
 from src.utils.predictor import Predictor
 
@@ -17,4 +17,5 @@ def load_and_prepare_data(server):
     # Add Abs Humidity
     convert_rel_to_abs_humidity = lambda x: (6.112*math.exp((17.67*x["temperature"])/(x["temperature"] + 243.5)) * x["humidity"] * 2.1674) / (273.15+x["temperature"])
     data["abs_humidity"] = data.apply(convert_rel_to_abs_humidity, axis=1)
+    data['timestamp'] = pd.to_datetime(data['timestamp'], format='%Y/%m/%d %H:%M:%S')
     return data
