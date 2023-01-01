@@ -7,7 +7,7 @@ from src.utils.predictor import Predictor
 
 from src.utils.aggregator import aggregate
 
-from flask import Response, render_template, request
+from flask import Response, render_template, request, send_file
 from flask import current_app as app
 
 from src.utils.io_interaction import read_as_str_from_disk, read_as_pandas_from_disk, write_pandas_data_to_disk, pandas_to_str
@@ -33,8 +33,7 @@ def get_data():
 
 @app.route("/text-data")
 def text_data():
-    data = read_as_str_from_disk(app.config["DATA_PATH"])
-    return data.split("\n")
+    return send_file(app.config["DATA_PATH"], as_attachment=True)
 
 @app.route("/del-data")
 def del_data():
