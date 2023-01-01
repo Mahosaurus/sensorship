@@ -29,7 +29,7 @@ def get_data():
         data = request.json
         with open(app.config["DATA_PATH"], "a", encoding="utf-8") as filehandle:
             filehandle.write(data["data"])
-        return f"Received {data}"    
+        return f"Received {data}"
 
 @app.route("/text-data")
 def text_data():
@@ -39,7 +39,7 @@ def text_data():
 def del_data():
     data = read_as_str_from_disk(app.config["DATA_PATH"])
     os.remove(app.config["DATA_PATH"])
-    return "Deleted:\n" + data    
+    return "Deleted:\n" + data
 
 
 @app.route("/aggregate-data")
@@ -52,7 +52,7 @@ def aggregate_data():
 @app.route("/show-data")
 def plot_png():
     # Read existing data
-    data = read_as_str_from_disk(app.config["DATA_PATH"])    
+    data = read_as_str_from_disk(app.config["DATA_PATH"])
     # Add predicted data
     pred_data = read_as_pandas_from_disk(app.config["DATA_PATH"])
     predictor = Predictor(pred_data)
@@ -61,7 +61,7 @@ def plot_png():
     # Concat
     data = data + pred_data
     # Plot
-    plotter = PlotSensor(data)    
+    plotter = PlotSensor(data)
     fig = plotter.create_figure(len(pred_data))
     output = io.BytesIO()
     FigureCanvasAgg(fig).print_png(output)
