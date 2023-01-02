@@ -5,7 +5,6 @@ from typing import Tuple, List
 
 from matplotlib.figure import Figure
 import matplotlib.dates as dates
-import pandas as pd
 import numpy as np
 
 from src.utils.helpers import parse_data_points

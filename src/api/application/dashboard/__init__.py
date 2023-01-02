@@ -3,8 +3,9 @@ import dash
 from dash import dcc
 from dash import html
 
-from .data import load_and_prepare_data
+from .data import load_and_prepare_data, generate_plot
 from .layout import html_layout
+
 
 def init_dashboard(server):
     """Create a Plotly Dash dashboard."""
@@ -12,34 +13,23 @@ def init_dashboard(server):
         server=server,
         routes_pathname_prefix="/dashboard/"
     )
-    data = load_and_prepare_data(server)
+    data, len_pred = load_and_prepare_data(server)
+
     # Custom HTML layout
     dash_app.index_string = html_layout
+
     # Create Layout
     dash_app.layout = html.Div(
         children=[
+            dcc.Interval(
+                id='interval-component',
+                interval=1*1000*60, # in milliseconds
+                n_intervals=0
+            ),
             dcc.Graph(
                 id="temperature-graph",
-                figure={
-                    "data": [
-                        {
-                            "x": data["timestamp"],
-                            "y": data["temperature"],
-                            # https://plotly.com/javascript/reference/#scatter-line
-                            "line": {
-                                'color': 'blue',
-                                'dash': 'dashdot',
-                                'width': 2
-                                }
-                        }
-                    ],
-                    # TODO: add_hline
-                    "layout": {
-                        "title": "<b>Temperature</b>",
-                        "height": 500,
-                        "padding": 150,
-                    },
-                },
+                figure=generate_plot(data, "temperature", len_pred),
+                config={"scrollZoom": False}
             ),
             dcc.Slider(
                 id='temp-slider',
@@ -48,28 +38,11 @@ def init_dashboard(server):
                 value=data['slider'].min(),
                 marks={str(year): str(year) for year in data['slider'].unique()},
                 step=None
-            ),            
+            ),
             dcc.Graph(
                 id="rel-humidity-graph",
-                figure={
-                    "data": [
-                        {
-                            "x": data["timestamp"],
-                            "y": data["humidity"],               
-                            # https://plotly.com/javascript/reference/#scatter-line
-                            "line": {
-                                'color': 'blue',
-                                'dash': 'dashdot',
-                                'width': 2
-                                }
-                        }
-                    ],
-                    "layout": {
-                        "title": "<b>Relative Humidity</b>",
-                        "height": 500,
-                        "padding": 150,
-                    },                    
-                },
+                figure=generate_plot(data, "humidity", len_pred),
+                config={"scrollZoom": False}
             ),
             dcc.Slider(
                 id='humidity-slider',
@@ -78,29 +51,11 @@ def init_dashboard(server):
                 value=data['slider'].min(),
                 marks={str(year): str(year) for year in data['slider'].unique()},
                 step=None
-            ),             
+            ),
             dcc.Graph(
                 id="abs-humidity-graph",
-                figure={
-                    "data": [
-                        {
-                            "x": data["timestamp"],
-                            "y": data["abs_humidity"],
-                            # https://plotly.com/javascript/reference/#scatter-line
-                            "line": {
-                                'color': 'blue',
-                                'dash': 'dashdot',
-                                'width': 2
-                                }                            
-                        }
-                    ],
-                    "layout": {
-                        "title": "<b>Absolute Humidity</b>",
-                        "height": 500,
-                        "padding": 150,
-                        "color": "blue"
-                    },                    
-                },
+                figure=generate_plot(data, "abs_humidity", len_pred),
+                config={"scrollZoom": False}
             )
         ],
         id="dash-container",
