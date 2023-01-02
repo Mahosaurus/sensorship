@@ -47,6 +47,7 @@ def generate_plot(data: pd.DataFrame, style: str, len_pred: int):
     fig.update_layout(
         title_text=style.capitalize()
     )
+    # TODO: Makes lines at timestamp not at prediction
     fig.add_vline(
         x=data.at[len(data)-len_pred, "timestamp"],
         line_color="red")

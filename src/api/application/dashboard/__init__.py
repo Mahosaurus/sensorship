@@ -2,6 +2,7 @@
 import dash
 from dash import dcc
 from dash import html
+from dash.dependencies import Output, Input
 
 from .data import load_and_prepare_data, generate_plot
 from .layout import html_layout
