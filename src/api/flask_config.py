@@ -13,5 +13,4 @@ else:
     FLASK_ENV = 'development'
     DEBUG = True
     Testing = True
-    DATA_PATH = os.path.join(get_repo_root(), "outcome_local.txt")
-    
+    DATA_PATH = os.path.join(get_repo_root(), "mock_data", "outcome_local.txt")
