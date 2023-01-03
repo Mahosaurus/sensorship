@@ -5,7 +5,7 @@ from dash import html
 from dash.dependencies import Output, Input
 import plotly.graph_objects as go
 
-from .data import PlotDashboard
+from src.utils.graphics import PlotDashboard
 from .layout import html_layout
 
 class DashboardInit():
@@ -71,6 +71,7 @@ class DashboardInit():
         return dash_app.server
 
     def init_callbacks(self, dash_app):
+        """ Collection of callback functions """
         @dash_app.callback(
         [Output(component_id='temperature-graph', component_property='figure')],
         [Input(component_id='interval-component', component_property='n_intervals')]

@@ -3,10 +3,14 @@
 {% block content %}
 <div class="card">
   <h1 class="site-title">{{ title }}</h1>
-  <p class="subtitle">Dashboard</p>
   <a href="/dashboard/" class="dash-link">
-    <span>Embedded Dashboard</span>
+    <span>Room condition dashboard</span>
     <i class="fas fa-arrow-right"></i>
   </a>
+  <br>
+  <a href="/show-data">
+    <span>Classic view</span>
+    <i class="fas fa-arrow-right"></i>
+  </a>  
 </div>
 {% endblock %}

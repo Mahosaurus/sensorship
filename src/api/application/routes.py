@@ -17,10 +17,9 @@ def home():
     """Landing page."""
     return render_template(
         "index.jinja2",
-        title="Plotly Dash Flask Tutorial",
-        description="Embed Plotly Dash into your Flask applications.",
+        title="Entry page",
         template="home-template",
-        body="This is a homepage served with Flask.",
+        body="Entry page for room condition dashboard",
     )
 
 @app.route('/sensor-data', methods=['PUT'])
@@ -40,7 +39,6 @@ def del_data():
     data = read_as_str_from_disk(app.config["DATA_PATH"])
     os.remove(app.config["DATA_PATH"])
     return "Deleted:\n" + data
-
 
 @app.route("/aggregate-data")
 def aggregate_data():
