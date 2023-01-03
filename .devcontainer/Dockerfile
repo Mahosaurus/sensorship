@@ -4,18 +4,7 @@
 FROM mcr.microsoft.com/vscode/devcontainers/python:3.9@sha256:29ca94ddf0f254cb36e311ae59520c4dee33a35de7c0b2f1bd7b91650d368ee0
 
 COPY .devcontainer/sgre_zscaler_cert.crt /usr/local/share/ca-certificates/
+RUN cat /etc/ssl/certs/ca-certificates.crt /usr/local/share/ca-certificates/sgre_zscaler_cert.crt > /etc/ssl/certs/ca-certificates.crt
 RUN apt-get update && apt-get install -y ca-certificates && \
     update-ca-certificates --fresh 
 ENV NODE_EXTRA_CA_CERTS="/etc/ssl/certs/ca-certificates.crt"
-
-# [Optional] If your pip requirements rarely change, uncomment this section to add them to the image.
-# COPY requirements.txt /tmp/pip-tmp/
-# RUN pip3 --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt \
-#    && rm -rf /tmp/pip-tmp
-
-# [Optional] Uncomment this section to install additional OS packages.
-# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-#     && apt-get -y install --no-install-recommends <your-package-list-here>
-
-# [Optional] Uncomment this line to install global node packages.
-# RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1

@@ -1,0 +1,16 @@
+{% extends "layout.jinja2" %}
+
+{% block content %}
+<div class="card">
+  <h1 class="site-title">{{ title }}</h1>
+  <a href="/dashboard/" class="dash-link">
+    <span>Room condition dashboard</span>
+    <i class="fas fa-arrow-right"></i>
+  </a>
+  <br>
+  <a href="/show-data">
+    <span>Classic view</span>
+    <i class="fas fa-arrow-right"></i>
+  </a>  
+</div>
+{% endblock %}
