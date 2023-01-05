@@ -1,14 +1,14 @@
 
 import io
 import os
-from matplotlib.backends.backend_agg import FigureCanvasAgg
-from src.utils.graphics import PlotSensor
-from src.utils.predictor import Predictor
-
-from src.utils.aggregator import aggregate
 
 from flask import Response, render_template, request, send_file
 from flask import current_app as app
+from matplotlib.backends.backend_agg import FigureCanvasAgg
+
+from src.utils.aggregator import aggregate
+from src.utils.graphics import PlotSensor
+from src.utils.predictor import Predictor
 
 from src.utils.io_interaction import read_as_str_from_disk, read_as_pandas_from_disk, write_pandas_data_to_disk, pandas_to_str
 

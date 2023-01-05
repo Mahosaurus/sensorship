@@ -33,8 +33,8 @@ class PlotSensor():
 
     @staticmethod
     def determine_minor_x_axis_interval(timestamp: List[str], steps: int=16) -> int:
-        if len(timestamp) < 2: raise ValueError
         """ Determine the interval to be 16 steps, as this fits font size with plot """
+        if len(timestamp) < 2: raise ValueError
         mini = datetime.datetime.strptime(min(timestamp), "%Y-%m-%d %H:%M:%S").timestamp()
         maxi = datetime.datetime.strptime(max(timestamp), "%Y-%m-%d %H:%M:%S").timestamp()
         time_diff_mins = (maxi-mini)/60 # Minute Locator
@@ -129,7 +129,7 @@ class PlotDashboard():
     def __new__(cls, *args, **kwargs):
         """ Singleton implementation
         https://stackoverflow.com/questions/31875/is-there-a-simple-elegant-way-to-define-singletons/33201#33201
-        We need the singleton, as the main instance knows the data path, which cannot be shared with the 
+        We need the singleton, as the main instance knows the data path, which cannot be shared with the
         callbacks for dash (as that would require passing of server instance)
         """
         instances = cls.__dict__.get("__instances__")
@@ -152,6 +152,10 @@ class PlotDashboard():
         "Runs the steps to create the data frame"
         # Load DataFrame
         data = read_as_pandas_from_disk(self.data_path)
+        # Return empty object if empty
+        if len(data) == 0:
+            data["slider"] = object
+            return data, 0
         # Add predicted data
         pred_data = read_as_pandas_from_disk(self.data_path)
         predictor = Predictor(pred_data)
@@ -169,11 +173,16 @@ class PlotDashboard():
 
     def generate_plot(self, data: pd.DataFrame, style: str, len_pred: int):
         "Generates a generic scatter plot in plotly"
+        if len(data) == 0:
+            return go.Figure()
+
         x = data["timestamp"]
         y = data[style]
+        _lower_bound = min(y) - 0.5
+        _upper_bound = max(y) + 0.5
 
         fig = go.Figure()
-
+        # Adding scatter lines
         fig.add_trace(
             go.Scatter(
                 x=x,
@@ -183,8 +192,32 @@ class PlotDashboard():
             )
         )
         fig.update_layout(
-            title_text=style.capitalize()
+            title_text=style.capitalize(),
+            # Adding fixed scale
+            yaxis=dict(
+                range=[_lower_bound, _upper_bound]
+            ),
+            # White Background
+            plot_bgcolor='white'
         )
+
+        # Adding back lines
+        fig.update_xaxes(
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            linecolor='black',
+            gridcolor='lightgrey'
+        )
+        # Adding back lines
+        fig.update_yaxes(
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            linecolor='black',
+            gridcolor='lightgrey'
+        )
+
         # Prediction marker
         length_for_prediction = 24
         prediction_horizon = 24
