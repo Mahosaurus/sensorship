@@ -8,7 +8,8 @@ import torch
 
 import pandas as pd
 
-from src.predictor.temperature_lstm_model import LSTMModel
+from src.predictor.temperature_lstm_model import LSTMModel as TEMPERATURE_LSTM
+from src.predictor.humidity_lstm_model import LSTMModel as HUMIDITY_LSTM
 from src.utils.helpers import get_repo_root
 from src.config import LSTM_INPUT_HISTORY, DATA_COLUMNS
 
@@ -20,7 +21,10 @@ class Predictor():
     def load_model(flavour):
         path_to_model = os.path.join(get_repo_root(), "predictor", f"{flavour}_lstm.model")
         path_to_preproc = os.path.join(get_repo_root(), "predictor", f"{flavour}_preproc.joblib")
-        model = LSTMModel()
+        if flavour == "temperature":
+            model = TEMPERATURE_LSTM()
+        if flavour == "humidity":
+            model = HUMIDITY_LSTM()            
         if not os.path.isfile(path_to_model):
             print("Model state dict not found")
             return None
