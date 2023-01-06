@@ -19,12 +19,12 @@ class Predictor():
 
     @staticmethod
     def load_model(flavour):
-        path_to_model = os.path.join(get_repo_root(), "predictor", f"{flavour}_lstm.model")
-        path_to_preproc = os.path.join(get_repo_root(), "predictor", f"{flavour}_preproc.joblib")
+        path_to_model = os.path.join(get_repo_root(),"src", "predictor", f"{flavour}_lstm.model")
+        path_to_preproc = os.path.join(get_repo_root(), "src", "predictor", f"{flavour}_preproc.joblib")
         if flavour == "temperature":
             model = TEMPERATURE_LSTM()
         if flavour == "humidity":
-            model = HUMIDITY_LSTM()            
+            model = HUMIDITY_LSTM()
         if not os.path.isfile(path_to_model):
             print("Model state dict not found")
             return None
