@@ -8,8 +8,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 
 from src.data_handling.aggregator import aggregate
 from src.data_visualization.graphics import PlotSensor
-from src.value_prediction.predictor import Predictor
-
+from src.data_prediction.predictor import Predictor
 from src.data_handling.io_interaction import read_as_str_from_disk, read_as_pandas_from_disk, write_pandas_data_to_disk, pandas_to_str
 
 @app.route("/")

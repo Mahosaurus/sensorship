@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 import numpy as np
 import pandas as pd
 
-from src.value_prediction.predictor import Predictor
+from src.data_prediction.predictor import Predictor
 from src.utils.helpers import parse_data_points
 from src.data_handling.io_interaction import *
 

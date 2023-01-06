@@ -7,7 +7,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask
 import requests
 
-from src.utils.tempsensor import get_sensor_data
+from src.sensor_collection.tempsensor import get_sensor_data
 from src.utils.helpers import compile_data_point
 
 def get_data() -> Tuple[str, str]:
