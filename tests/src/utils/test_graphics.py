@@ -1,5 +1,5 @@
 import pytest
-from src.utils.graphics import PlotSensor
+from data_visualization.graphics import PlotSensor
 
 def test_map_time_to_time_of_day():
     # Test with valid input

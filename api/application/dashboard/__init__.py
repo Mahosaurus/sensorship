@@ -5,7 +5,7 @@ from dash import html
 from dash.dependencies import Output, Input
 import plotly.graph_objects as go
 
-from src.utils.graphics import PlotDashboard
+from src.data_visualization.graphics import PlotDashboard
 from .layout import html_layout
 
 class DashboardInit():

@@ -1,5 +1,3 @@
-import os
-
 DATA_COLUMNS = ["timestamp", "temperature", "humidity"]
 DATA_SEP = ","
 

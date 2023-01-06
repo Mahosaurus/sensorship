@@ -9,9 +9,9 @@ import plotly.graph_objects as go
 import numpy as np
 import pandas as pd
 
-from src.utils.predictor import Predictor
+from src.value_prediction.predictor import Predictor
 from src.utils.helpers import parse_data_points
-from src.utils.io_interaction import *
+from src.data_handling.io_interaction import *
 
 class PlotSensor():
     def __init__(self, data):

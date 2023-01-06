@@ -3,6 +3,8 @@ import os
 
 from typing import Tuple, List
 
+import pandas as pd
+
 def format_timestamp(timestamp: str) -> str:
     """ Convert ts to human readable """
     return datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
@@ -28,3 +30,13 @@ def get_repo_root() -> str:
     """
     path_to_this_file = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))) + "/"
     return path_to_this_file
+
+def parse_data_for_ml(data):
+    # Convert temp and humid to numeric
+    data["temperature"] = data["temperature"].astype(float)
+    data["humidity"] = data["humidity"].astype(float)
+    # Last row is empty
+    data = data[:-1]
+    # Convert to datetime
+    data["timestamp"] = pd.to_datetime(data["timestamp"])    
+    return data

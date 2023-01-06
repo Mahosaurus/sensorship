@@ -1,6 +1,6 @@
 import pandas as pd
 
-from src.utils.predictor import Predictor
+from value_prediction.predictor import Predictor
 
 def test_make_24hrs():
     result = Predictor.make_24hrs()

@@ -22,9 +22,6 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: '3.9'
-          
-      #- name: Install dependencies
-      #  run: pip install -r ./src/api/requirements.txt
       
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v3
@@ -38,9 +35,8 @@ jobs:
         with:
           name: helper-code
           path: |
-            ./src/utils/*
-            ./src/predictor/*
-            ./src/config.py
+            ./ml/ml_artifacts/*
+            ./src/*
 
   deploy:
     runs-on: ubuntu-latest
