@@ -38,5 +38,5 @@ def parse_data_for_ml(data):
     # Last row is empty
     data = data[:-1]
     # Convert to datetime
-    data["timestamp"] = pd.to_datetime(data["timestamp"])    
+    data["timestamp"] = pd.to_datetime(data["timestamp"])
     return data

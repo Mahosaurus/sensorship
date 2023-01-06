@@ -20,7 +20,6 @@ class DashboardInit():
             routes_pathname_prefix="/dashboard/"
         )
 
-        data, len_pred = self.dashboard_plotter.load_and_prepare_data()
 
         # Custom HTML layout
         dash_app.index_string = html_layout
@@ -35,33 +34,17 @@ class DashboardInit():
                 ),
                 dcc.Graph(
                     id="temperature-graph",
-                    figure=self.dashboard_plotter.generate_plot(data, "temperature", len_pred),
+                    figure=self.dashboard_plotter.generate_plot("temperature"),
                     config={"scrollZoom": False}
-                ),
-                dcc.Slider(
-                    id='temp-slider',
-                    min=data['slider'].min(),
-                    max=data['slider'].max(),
-                    value=data['slider'].min(),
-                    marks={str(year): str(year) for year in data['slider'].unique()},
-                    step=None
                 ),
                 dcc.Graph(
                     id="rel-humidity-graph",
-                    figure=self.dashboard_plotter.generate_plot(data, "humidity", len_pred),
+                    figure=self.dashboard_plotter.generate_plot("humidity"),
                     config={"scrollZoom": False}
-                ),
-                dcc.Slider(
-                    id='humidity-slider',
-                    min=data['slider'].min(),
-                    max=data['slider'].max(),
-                    value=data['slider'].min(),
-                    marks={str(year): str(year) for year in data['slider'].unique()},
-                    step=None
                 ),
                 dcc.Graph(
                     id="abs-humidity-graph",
-                    figure=self.dashboard_plotter.generate_plot(data, "abs_humidity", len_pred),
+                    figure=self.dashboard_plotter.generate_plot("abs_humidity"),
                     config={"scrollZoom": False}
                 )
             ],
@@ -78,8 +61,7 @@ class DashboardInit():
         )
         def update_graph(self):
             plotter = PlotDashboard()
-            data, len_pred = plotter.load_and_prepare_data()
-            fig = plotter.generate_plot(data, "temperature", len_pred)
+            fig = plotter.generate_plot("temperature")
             return [go.Figure(data=fig)]
 
         @dash_app.callback(
@@ -88,8 +70,7 @@ class DashboardInit():
         )
         def update_graph(self):
             plotter = PlotDashboard()
-            data, len_pred = plotter.load_and_prepare_data()
-            fig = plotter.generate_plot(data, "humidity", len_pred)
+            fig = plotter.generate_plot("humidity")
             return [go.Figure(data=fig)]
 
         @dash_app.callback(
@@ -98,6 +79,5 @@ class DashboardInit():
         )
         def update_graph(self):
             plotter = PlotDashboard()
-            data, len_pred = plotter.load_and_prepare_data()
-            fig = plotter.generate_plot(data, "abs_humidity", len_pred)
-            return [go.Figure(data=fig)]            
+            fig = plotter.generate_plot("abs_humidity",)
+            return [go.Figure(data=fig)]

@@ -142,26 +142,26 @@ class PlotDashboard():
     def __init__(self, server=None):
         if server is not None:
             self.data_path = server.config.get("DATA_PATH")
-        self.colormap = {'Night': 'darkolivegreen',
-                         'Morning': 'teal',
-                         'Day': 'indigo',
-                         'Afternoon':'maroon',
-                         'Evening': "purple"}
+        self.data = read_as_pandas_from_disk(self.data_path)
+        self.pred_data = None
+        self.length_prediction = 0
 
-    def load_and_prepare_data(self) -> Tuple[pd.DataFrame, int]:
-        "Runs the steps to create the data frame"
-        # Load DataFrame
-        data = read_as_pandas_from_disk(self.data_path)
-        # Return empty object if empty
-        if len(data) == 0:
-            data["slider"] = object
-            return data, 0
-        # Add predicted data
-        pred_data = read_as_pandas_from_disk(self.data_path)
-        predictor = Predictor(pred_data)
-        pred_data = predictor.make_lstm_prediction()
-        # Concat the two
-        data = data.append(pred_data, ignore_index=True)
+    def update_data(self):
+        """ Updates with the latest data from disk """
+        self.data = read_as_pandas_from_disk(self.data_path)
+
+    def update_prediction(self):
+        """ Updates prediction based on self.data """
+        predictor = Predictor(self.data)
+        self.pred_data = predictor.make_lstm_prediction()
+        self.length_prediction = len(self.pred_data)
+
+    def concat_data(self):
+        """ Concats data and prediction """
+        return pd.concat([self.data, self.pred_data], ignore_index=True)
+
+    def append_to_data(self, data):
+        """ Appends and lints data """
         # Add Abs Humidity
         convert_rel_to_abs_humidity = lambda x: (6.112*math.exp((17.67*x["temperature"])/(x["temperature"] + 243.5)) * x["humidity"] * 2.1674) / (273.15+x["temperature"])
         data["abs_humidity"] = data.apply(convert_rel_to_abs_humidity, axis=1)
@@ -169,12 +169,18 @@ class PlotDashboard():
         data['timestamp'] = pd.to_datetime(data['timestamp'], format='%Y/%m/%d %H:%M:%S')
         # Need this for slider
         data['slider'] = data['timestamp'].astype(np.int64) // 1e9
-        return data, len(pred_data)
+        return data
 
-    def generate_plot(self, data: pd.DataFrame, style: str, len_pred: int):
-        "Generates a generic scatter plot in plotly"
-        if len(data) == 0:
+    def generate_plot(self, style: str):
+        "Runs the steps to generate a generic scatter plot in plotly"
+        self.update_data()
+        if len(self.data) == 0:
             return go.Figure()
+
+        self.update_prediction()
+        data = self.concat_data()
+        data = self.append_to_data(data)
+
 
         x = data["timestamp"]
         y = data[style]
@@ -223,10 +229,10 @@ class PlotDashboard():
         prediction_horizon = 24
         if len(data) > length_for_prediction + prediction_horizon:
             fig.add_vline(
-                x=data.at[len(data)-len_pred, "timestamp"],
+                x=data.at[len(data)-self.length_prediction , "timestamp"],
                 line_color="red")
             fig.add_vrect(
-                x0=data.at[len(data)-len_pred, "timestamp"],
+                x0=data.at[len(data)-self.length_prediction , "timestamp"],
                 x1=data.at[len(data)-1, "timestamp"],
                 line_width=0,
                 fillcolor="red",

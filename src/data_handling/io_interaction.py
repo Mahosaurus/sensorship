@@ -40,4 +40,6 @@ def pandas_to_str(data: pd.DataFrame):
 
 def str_to_pandas(data: str) -> pd.DataFrame:
     """ Converts string representation to Pandas """
-    return read_as_pandas_from_disk(data) #TODO: Check if that works
+    #TODO: Check if that works
+    save_str_data_to_disk(data, "tmp_data.tmp")
+    return read_as_pandas_from_disk("tmp_data.tmp")
