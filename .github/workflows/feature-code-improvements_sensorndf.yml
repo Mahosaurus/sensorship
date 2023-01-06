@@ -8,7 +8,7 @@ on:
   push:
     branches:
       - main
-      - feature/introduce-dash
+      - feature/minor-improvements
   workflow_dispatch:
 
 jobs:
@@ -22,25 +22,21 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: '3.9'
-          
-      - name: Install dependencies
-        run: pip install -r ./src/api/requirements.txt
       
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v3
         with:
           name: python-app
           path: |
-            ./src/api/*
+            ./api/*
 
       - name: Upload helper code for deployment jobs
         uses: actions/upload-artifact@v3
         with:
           name: helper-code
           path: |
-            ./src/utils/*
-            ./src/predictor/*
-            ./src/config.py
+            ./ml/ml_artifacts/*
+            ./src/*
 
   deploy:
     runs-on: ubuntu-latest
@@ -60,7 +56,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: helper-code
-          path: ./src/
+          path: .
 
       - name: Display structure of downloaded files
         run: ls -R

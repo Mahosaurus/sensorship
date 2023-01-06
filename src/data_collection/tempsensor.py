@@ -1,12 +1,9 @@
-import os
-import random
 import time
 
 from typing import Tuple
 
 import smbus
 
-from src.utils.helpers import get_repo_root
 
 address = 0x38 #Put your device's address here
 
@@ -32,15 +29,5 @@ def get_sensor_data() -> Tuple[str, str]:
 
     humid_raw_value = ((data[3] & 0xf0) >> 4) + (data[1] << 12) + (data[2] << 4)
     humidity = round(100*float(humid_raw_value)/2**20, 2)
-
-    return str(temperature), str(humidity)
-
-def get_mock_data() -> Tuple[str, str]:
-    """ Mock data if sensor is not attachted """
-    with open(os.path.join(get_repo_root(), "mock_data", "random_data.txt"), "r", encoding="utf-8") as filehandle:
-        data = filehandle.read()
-    data = data.split("\n")
-    temperature = random.choice(data)
-    humidity = str(float(random.choice(data))+5*4)
 
     return str(temperature), str(humidity)

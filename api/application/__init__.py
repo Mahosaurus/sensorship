@@ -1,8 +1,8 @@
 
 """Initialize Flask app."""
-from flask import Flask
 from os import path
 
+from flask import Flask
 
 def init_app():
     """Construct core Flask application with embedded Dash app."""

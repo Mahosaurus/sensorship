@@ -11,6 +11,18 @@ def aggregate(data: pd.DataFrame, base: str="hours") -> pd.DataFrame:
         agg_data["timestamp"] = agg_data["date"].astype(str) + " " + agg_data["hour"].astype(str) + ":00:00"
         agg_data.drop(["date", "hour"], axis=1, inplace=True)
         return agg_data
+
+    if base == "minutes":
+        data["date"] = data["timestamp"].dt.date
+        data["hour"] = data["timestamp"].dt.hour
+        data["minute"] = data["timestamp"].dt.minute
+        agg_data = data.groupby([data.date, data.hour, data.minute])["temperature", "humidity"].apply(lambda x : round(x.astype(float).mean(), 2))
+        agg_data = agg_data.reset_index()
+        # Adding back expected columns
+        agg_data["timestamp"] = agg_data["date"].astype(str) + " " + agg_data["hour"].astype(str) + ":" +  agg_data["minute"].astype(str) + ":00"
+        agg_data.drop(["date", "hour", "minute"], axis=1, inplace=True)
+        return agg_data
+
     else:
         print("not implemented")
         return data
