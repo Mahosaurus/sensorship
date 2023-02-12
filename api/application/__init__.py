@@ -2,6 +2,7 @@
 """Initialize Flask app."""
 from os import path
 
+from pprint import pprint
 from flask import Flask
 
 def init_app():
@@ -12,7 +13,7 @@ def init_app():
     with app.app_context():
         # Import parts of our core Flask app
         from . import routes
-
+        pprint(app.config)
         # Import Dash application
         from .dashboard import DashboardInit
 

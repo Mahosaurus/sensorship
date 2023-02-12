@@ -29,22 +29,6 @@ def get_data():
             filehandle.write(data["data"])
         return f"Received {data}"
 
-@app.route("/text-data")
-def text_data():
-    return send_file(app.config["DATA_PATH"], as_attachment=True)
-
-@app.route("/del-data")
-def del_data():
-    data = read_as_str_from_disk(app.config["DATA_PATH"])
-    os.remove(app.config["DATA_PATH"])
-    return "Deleted:\n" + data
-
-@app.route("/aggregate-data")
-def aggregate_data():
-    data = read_as_pandas_from_disk(app.config["DATA_PATH"])
-    aggregated_data = aggregate(data)
-    write_pandas_data_to_disk(aggregated_data, app.config["DATA_PATH"])
-    return "Success"
 
 @app.route("/show-data")
 def plot_png():
@@ -63,3 +47,45 @@ def plot_png():
     output = io.BytesIO()
     FigureCanvasAgg(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
+
+
+@app.route("/text-data", methods=['GET'])
+def text_data():
+    secret_key = request.args.get("secret_key")
+    if secret_key == app.config["SECRET_KEY"]:
+        return send_file(app.config["DATA_PATH"], as_attachment=True)
+    else:
+        return render_template(
+            "index.jinja2",
+            title="Entry page",
+            template="home-template",
+            body="Entry page for room condition dashboard")                
+
+@app.route("/del-data", methods=['GET'])
+def del_data():
+    secret_key = request.args.get("secret_key")
+    if secret_key == app.config["SECRET_KEY"]:    
+        data = read_as_str_from_disk(app.config["DATA_PATH"])
+        os.remove(app.config["DATA_PATH"])
+        return "Deleted:\n" + data
+    else:
+        return render_template(
+            "index.jinja2",
+            title="Entry page",
+            template="home-template",
+            body="Entry page for room condition dashboard")        
+
+@app.route("/aggregate-data", methods=['GET'])
+def aggregate_data():
+    secret_key = request.args.get("secret_key")
+    if secret_key == app.config["SECRET_KEY"]:         
+        data = read_as_pandas_from_disk(app.config["DATA_PATH"])
+        aggregated_data = aggregate(data)
+        write_pandas_data_to_disk(aggregated_data, app.config["DATA_PATH"])
+        return "Success"
+    else:
+        return render_template(
+            "index.jinja2",
+            title="Entry page",
+            template="home-template",
+            body="Entry page for room condition dashboard")               

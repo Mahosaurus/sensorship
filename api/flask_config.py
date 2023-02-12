@@ -8,9 +8,11 @@ if os.environ.get("DEPLOY_ENV") == "production":
     DEBUG = False
     Testing = False
     DATA_PATH = os.path.join("/home", "site", "outcome_remote.txt")
+    SECRET_KEY = os.getenv("SECRET_KEY")
 else:
     ENV = 'development'
     FLASK_ENV = 'development'
     DEBUG = True
     Testing = True
     DATA_PATH = os.path.join(get_repo_root(), "src", "example_data", "outcome_local.txt")
+    SECRET_KEY = os.getenv("SECRET_KEY")
