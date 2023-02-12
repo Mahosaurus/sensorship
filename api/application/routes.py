@@ -25,9 +25,10 @@ def home():
 def get_data():
     if request.method == 'PUT':
         data = request.json
-        with open(app.config["DATA_PATH"], "a", encoding="utf-8") as filehandle:
-            filehandle.write(data["data"])
-        return f"Received {data}"
+        if data['secret_key'] == app.config["SECRET_KEY"]:
+            with open(app.config["DATA_PATH"], "a", encoding="utf-8") as filehandle:
+                filehandle.write(data["data"])
+            return f"Received {data}"
 
 
 @app.route("/show-data")
