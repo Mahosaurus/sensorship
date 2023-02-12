@@ -70,7 +70,7 @@ jobs:
         env:
           DEPLOY_ENV: "production"
 
-      - ame: Setting secret-variable
+      - name: Setting secret-variable
         run: echo "Setting secret variable"
         env:
           SECRET_KEY: ${{ vars.SECRET_KEY }}
