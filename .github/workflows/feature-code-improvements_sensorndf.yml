@@ -62,7 +62,7 @@ jobs:
         run: ls -R
         working-directory: .
 
-      - name: Displace vars
+      - name: Display vars
         run: echo ${{ vars.SECRET_KEY }}
       
       - name: Setting ENV to production
