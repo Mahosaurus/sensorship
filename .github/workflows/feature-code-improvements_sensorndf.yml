@@ -67,6 +67,11 @@ jobs:
         env:
           DEPLOY_ENV: "production"
 
+      - name: Step Env var
+        run: echo "Setting secret variable"
+        env:
+          SECRET_KEY: $SECRET_KEY      
+
       - name: Display env vars
         run: env       
          
