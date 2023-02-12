@@ -7,7 +7,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask
 import requests
 
-from src.sensor_collection.tempsensor import get_sensor_data
+from src.data_collection.tempsensor import get_sensor_data
 from src.utils.helpers import compile_data_point
 
 def get_data() -> Tuple[str, str]:
@@ -18,6 +18,7 @@ def send_to_app(out_str):
     """ Try to send metrics to App """
     try:
         dict_to_send = {"data": out_str}
+        dict_to_send = {'secret_key': os.environ.get("SECRET_KEY")}
         res = requests.put(os.environ['LINK'], json=dict_to_send, verify=False)
         print(res, res.text)
     except Exception as exc:
