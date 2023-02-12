@@ -3,6 +3,9 @@
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
 name: Build and deploy Python app to Azure Web App - sensorndf
+env:
+  DEPLOY_ENV: 'production'
+  SECRET_KEY: ${{ vars.SECRET_KEY }}
 
 on:
   push:
@@ -61,19 +64,6 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R
         working-directory: .
-
-      - name: Display vars
-        run: echo ${{ vars.SECRET_KEY }}
-      
-      - name: Setting ENV to production
-        run: echo "Setting env to production"
-        env:
-          DEPLOY_ENV: "production"
-
-      - name: Setting secret-variable
-        run: echo "Setting secret variable"
-        env:
-          SECRET_KEY: ${{ vars.SECRET_KEY }}
 
       - name: Display env vars
         run: env       
