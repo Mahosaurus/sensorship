@@ -29,6 +29,7 @@ def get_data():
             with open(app.config["DATA_PATH"], "a", encoding="utf-8") as filehandle:
                 filehandle.write(data["data"])
             return f"Received {data}"
+    return f"Received {data}, could not process using {data['secret_key']}"
 
 
 @app.route("/show-data")
