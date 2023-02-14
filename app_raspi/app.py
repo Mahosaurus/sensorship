@@ -18,7 +18,7 @@ def send_to_app(out_str):
     """ Try to send metrics to App """
     try:
         dict_to_send = {"data": out_str}
-        dict_to_send = {'secret_key': os.environ.get("SECRET_KEY")}
+        dict_to_send['secret_key'] = os.environ.get("SECRET_KEY")
         res = requests.put(os.environ['LINK'], json=dict_to_send, verify=False)
         print(res, res.text)
     except Exception as exc:
