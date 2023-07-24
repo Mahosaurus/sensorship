@@ -1,10 +1,10 @@
 # Install prereq for venv
 sudo apt -y install python3.8-venv
 # Install venv
-python3 -m venv venv
+python3 -m venv venv_sensor
 
 # https://pythonspeed.com/articles/activate-virtualenv-dockerfile/
-export VIRTUAL_ENV=./venv
+export VIRTUAL_ENV=./venv_sensor
 export PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Adding prev to bashrc
@@ -15,8 +15,8 @@ echo 'export PATH="$VIRTUAL_ENV/bin:$PATH"' >> ${HOME}/.bash_profile
 echo 'export LINK=http://127.0.0.1:5000/sensor-data' >> ${HOME}/.bash_profile
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source "$SCRIPT_DIR"/venv/bin/activate
+source "$SCRIPT_DIR"/venv_sensor/bin/activate
 python src/setup.py develop
 pip3 install -r requirements.txt
-pip3 install -r src/api/requirements.txt
-
+pip3 install -r ml/requirements.txt
+pip3 install -r api/requirements.txt

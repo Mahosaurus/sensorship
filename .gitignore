@@ -103,9 +103,9 @@ celerybeat.pid
 
 # Environments
 .env
-.venv
+.venv_sensor
 env/
-venv/
+venv_sensor/
 ENV/
 env.bak/
 venv.bak/
@@ -131,3 +131,5 @@ nohup*
 
 .vscode/*
 *.crt
+secret
+.devcontainer/sgre_zscaler_cert
