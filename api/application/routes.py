@@ -10,6 +10,7 @@ from src.data_handling.aggregator import aggregate
 from src.data_visualization.graphics import PlotSensor
 from src.data_prediction.predictor import Predictor
 from src.data_handling.io_interaction import read_as_str_from_disk, read_as_pandas_from_disk, write_pandas_data_to_disk, pandas_to_str
+from src.data_storage.store_in_postgres import send_data_to_postgres
 
 @app.route("/")
 def home():
@@ -28,6 +29,10 @@ def get_data():
         if data['secret_key'] == app.config["SECRET_KEY"]:
             with open(app.config["DATA_PATH"], "a", encoding="utf-8") as filehandle:
                 filehandle.write(data["data"])
+            send_data_to_postgres(app.config["POSTGRES_HOST"],
+                                  app.config["POSTGRES_DBNAME"],
+                                  app.config["POSTGRES_USER"],
+                                  app.config["POSTGRES_PASSWORD"], data)
             return f"Received {data}"
     return f"Received {data}, could not process using {data['secret_key']}"
 
@@ -61,12 +66,12 @@ def text_data():
             "index.jinja2",
             title="Entry page",
             template="home-template",
-            body="Entry page for room condition dashboard")                
+            body="Entry page for room condition dashboard")
 
 @app.route("/del-data", methods=['GET'])
 def del_data():
     secret_key = request.args.get("secret_key")
-    if secret_key == app.config["SECRET_KEY"]:    
+    if secret_key == app.config["SECRET_KEY"]:
         data = read_as_str_from_disk(app.config["DATA_PATH"])
         os.remove(app.config["DATA_PATH"])
         return "Deleted:\n" + data
@@ -75,12 +80,12 @@ def del_data():
             "index.jinja2",
             title="Entry page",
             template="home-template",
-            body="Entry page for room condition dashboard")        
+            body="Entry page for room condition dashboard")
 
 @app.route("/aggregate-data", methods=['GET'])
 def aggregate_data():
     secret_key = request.args.get("secret_key")
-    if secret_key == app.config["SECRET_KEY"]:         
+    if secret_key == app.config["SECRET_KEY"]:
         data = read_as_pandas_from_disk(app.config["DATA_PATH"])
         aggregated_data = aggregate(data)
         write_pandas_data_to_disk(aggregated_data, app.config["DATA_PATH"])
@@ -90,4 +95,4 @@ def aggregate_data():
             "index.jinja2",
             title="Entry page",
             template="home-template",
-            body="Entry page for room condition dashboard")               
+            body="Entry page for room condition dashboard")

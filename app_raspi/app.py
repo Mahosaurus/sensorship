@@ -19,8 +19,8 @@ def send_to_app(out_str):
     try:
         dict_to_send = {"data": out_str}
         dict_to_send['secret_key'] = os.environ.get("SECRET_KEY")
-        res = requests.put(os.environ['LINK'], json=dict_to_send, verify=False)
-        print(res, res.text)
+        res = requests.put(os.environ['LINK'], json=dict_to_send, verify=True)
+        print(time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), ":", res, res.text)
     except Exception as exc:
         print(f"Error in sending metrics to App: {exc}")
 
