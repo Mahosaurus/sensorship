@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>{{ title }}</title>
+  <meta name="description" content="{{ description }}">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0297f6">
+
+  <meta property="og:site_name" content="{{ title }}"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:description" content="{{ description }}"/>
+  <meta property="og:image:width" content="1000"/>
+  <meta property="og:image:height" content="523"/>
+  <meta property="og:locale" content="en_US">
+</head>
+
+<body class="{{template}}">
+  <main class="container">
+	  {% block content %}{% endblock %}
+  </main>
+
+</body>
+
+</html>

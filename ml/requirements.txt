@@ -1,0 +1,4 @@
+--index-url=https://download.pytorch.org/whl/cpu --extra-index-url=https://pypi.org/simple
+torch==1.13.0
+pandas==2.0.3
+scikit-learn==1.1.3
