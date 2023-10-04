@@ -166,7 +166,7 @@ class PlotDashboard():
         convert_rel_to_abs_humidity = lambda x: (6.112*math.exp((17.67*x["temperature"])/(x["temperature"] + 243.5)) * x["humidity"] * 2.1674) / (273.15+x["temperature"])
         data["abs_humidity"] = data.apply(convert_rel_to_abs_humidity, axis=1)
         # Need this, as Dash cannot deal with objects
-        data['timestamp'] = pd.to_datetime(data['timestamp'], format='ISO8601')# format='%Y/%m/%d %H:%M:%S')
+        data['timestamp'] = pd.to_datetime(data['timestamp'], format='%Y/%m/%d %H:%M:%S')
         # Need this for slider
         data['slider'] = data['timestamp'].astype(np.int64) // 1e9
         return data

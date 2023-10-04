@@ -12,7 +12,7 @@ from src.data_prediction.predictor import Predictor
 ##############################################################################################################
 # Delete and Backfill with existing data
 ##############################################################################################################
-SET_UP_DATABASE_ANEW = True
+SET_UP_DATABASE_ANEW = False
 if SET_UP_DATABASE_ANEW:
     print("!WARNING! You are about to delete the database and backfill it with data from example_data/outcome_local.txt")
     print("Killing database in 10 seconds...")
@@ -37,6 +37,7 @@ data = show_database(os.getenv("POSTGRES_HOST"),
                         os.getenv("POSTGRES_PASSWORD"))
 data = pd.DataFrame(data, columns=['id', 'timestamp', 'temperature', 'humidity'])
 print(data)
+df
 
 ###############################################################################################################
 # Actual imputation
