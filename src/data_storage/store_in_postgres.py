@@ -19,7 +19,7 @@ def send_data_to_postgres(host: str, dbname: str, user: str, password: str, data
 
     cursor = conn.cursor()
     # Create a table
-    cursor.execute("CREATE TABLE IF NOT EXISTS sensorship (id serial PRIMARY KEY, date VARCHAR(50), temperature NUMERIC(2), humidity NUMERIC(2));")
+    cursor.execute("CREATE TABLE IF NOT EXISTS sensorship (id serial PRIMARY KEY, date VARCHAR(50), temperature NUMERIC(4, 2), humidity NUMERIC(4, 2));")
     print("Finished creating table")
 
     # Insert data into the table
@@ -31,7 +31,8 @@ def send_data_to_postgres(host: str, dbname: str, user: str, password: str, data
     cursor.close()
     conn.close()
 
-def delete_database(host: str, dbname: str, user: str, password: str, data: str):
+def delete_database(host: str, dbname: str, user: str, password: str) -> None:
+    """Delete database."""
     # Update connection string information
     sslmode = "require"
     # Construct connection string
@@ -50,12 +51,11 @@ def delete_database(host: str, dbname: str, user: str, password: str, data: str)
     cursor.close()
     conn.close()
 
-def show_database(host: str, dbname: str, user: str, password: str):
+def show_database(host: str, dbname: str, user: str, password: str) -> list:
     # Update connection string information
     sslmode = "require"
     # Construct connection string
     conn_string = "host={0} user={1} dbname={2} password={3} sslmode={4}".format(host, user, dbname, password, sslmode)
-
     conn = psycopg2.connect(conn_string)
     print("Connection established")
 
@@ -63,10 +63,10 @@ def show_database(host: str, dbname: str, user: str, password: str):
     # Create a table
     cursor.execute("SELECT * FROM sensorship")
     rows = cursor.fetchall()
-    print(rows)
 
     cursor.close()
     conn.close()
+    return rows
 
 def fix_entries():
     pass #TODO: implementation

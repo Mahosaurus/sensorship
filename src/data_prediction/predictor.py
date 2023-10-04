@@ -14,7 +14,7 @@ from src.utils.helpers import get_repo_root
 from src.config import LSTM_INPUT_HISTORY, DATA_COLUMNS
 
 class Predictor():
-    def __init__(self, data):
+    def __init__(self, data: pd.DataFrame):
         self.data = data
 
     @staticmethod

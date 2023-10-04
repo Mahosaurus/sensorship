@@ -30,13 +30,15 @@
     },
 
     "remoteEnv": {
-		"NODE_EXTRA_CA_CERTS": "/etc/ssl/certs/ca-certificates.crt"
+		"NODE_EXTRA_CA_CERTS": "/etc/ssl/certs/ca-certificates.crt",
+        "REQUESTS_CA_BUNDLE": "/etc/ssl/certs/ca-certificates.crt"
 	},
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
     // "forwardPorts": [],
 
     // Use 'postCreateCommand' to run commands after the container is created.
-    "postCreateCommand": ".deployment/install_dev_docker.sh"
+	"postCreateCommand": ".devcontainer/postCreateCommand.sh",
+	"postStartCommand": ".devcontainer/postStartCommand.sh"
 
     // Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 }

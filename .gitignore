@@ -133,3 +133,4 @@ nohup*
 *.crt
 secret
 .devcontainer/sgre_zscaler_cert
+exports
