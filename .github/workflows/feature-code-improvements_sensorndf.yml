@@ -8,7 +8,7 @@ on:
   push:
     branches:
       - main
-      - feature/various-improvements
+      - feature/*
   workflow_dispatch:
 
 jobs:
