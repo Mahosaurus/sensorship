@@ -5,12 +5,13 @@ import os
 from flask import Response, render_template, request, send_file
 from flask import current_app as app
 from matplotlib.backends.backend_agg import FigureCanvasAgg
+import pandas as pd
 
 from src.data_handling.aggregator import aggregate
 from src.data_visualization.graphics import PlotSensor
 from src.data_prediction.predictor import Predictor
 from src.data_handling.io_interaction import read_as_str_from_disk, read_as_pandas_from_disk, write_pandas_data_to_disk, pandas_to_str
-from src.data_storage.store_in_postgres import send_data_to_postgres
+from src.data_storage.store_in_postgres import send_data_to_postgres, show_database
 
 @app.route("/")
 def home():
@@ -58,6 +59,7 @@ def plot_png():
 
 @app.route("/text-data", methods=['GET'])
 def text_data():
+    # https://sensorndf.azurewebsites.net/text-data?secret_key=
     secret_key = request.args.get("secret_key")
     if secret_key == app.config["SECRET_KEY"]:
         return send_file(app.config["DATA_PATH"], as_attachment=True)
@@ -67,6 +69,26 @@ def text_data():
             title="Entry page",
             template="home-template",
             body="Entry page for room condition dashboard")
+
+@app.route("/override-from-database", methods=['GET'])
+def override_from_database():
+    # https://sensorndf.azurewebsites.net/override-from-database?secret_key=
+    secret_key = request.args.get("secret_key")
+    if secret_key == app.config["SECRET_KEY"]:
+        data = show_database(os.getenv("POSTGRES_HOST"),
+                             os.getenv("POSTGRES_DBNAME"),
+                             os.getenv("POSTGRES_USER"),
+                             os.getenv("POSTGRES_PASSWORD"))
+        daten = pd.DataFrame(data, columns=['id', 'timestamp', 'temperature', 'humidity'])
+        daten.drop(columns=['id'], inplace=True)
+        # Sort data by timestamp
+        daten = daten.sort_values(by=['timestamp'])
+        daten.to_csv(app.config["DATA_PATH"], index=False, header=False)
+    return render_template(
+        "index.jinja2",
+        title="Entry page",
+        template="home-template",
+        body="Entry page for room condition dashboard")
 
 @app.route("/del-data", methods=['GET'])
 def del_data():

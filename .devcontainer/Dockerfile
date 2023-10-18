@@ -7,3 +7,4 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:3.9@sha256:29ca94ddf0f254cb36
 COPY .devcontainer/sgre_zscaler_cert* /etc/ssl/certs/
 RUN cat /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/sgre_zscaler_cert.crt > /etc/ssl/certs/ca-certificates.crt; exit 0
 ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
