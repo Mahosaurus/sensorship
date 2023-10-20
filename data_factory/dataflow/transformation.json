@@ -1,0 +1,76 @@
+{
+	"name": "transformation",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SensorshipDevRaw",
+						"type": "DatasetReference"
+					},
+					"name": "SensorDevRaw"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SensorshipDevTransformed",
+						"type": "DatasetReference"
+					},
+					"name": "SensorDevTransformed"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AggregateByHour",
+					"description": "1"
+				},
+				{
+					"name": "GenerateAggDate"
+				},
+				{
+					"name": "Add0000ToDate"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id as integer,",
+				"          date as string,",
+				"          temperature as decimal(4,2),",
+				"          humidity as decimal(4,2)",
+				"     ),",
+				"     allowSchemaDrift: false,",
+				"     validateSchema: true,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SensorDevRaw",
+				"GenerateAggDate aggregate(groupBy(agg_date),",
+				"     temperature = mean(temperature),",
+				"          humidity = mean(humidity)) ~> AggregateByHour",
+				"SensorDevRaw derive(agg_date = substring(date, 0, 13)) ~> GenerateAggDate",
+				"AggregateByHour derive(agg_date = agg_date+\":00:00\") ~> Add0000ToDate",
+				"Add0000ToDate sink(allowSchemaDrift: false,",
+				"     validateSchema: true,",
+				"     input(",
+				"          id as integer,",
+				"          date as string,",
+				"          temperature as decimal(4,2),",
+				"          humidity as decimal(4,2)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          date = agg_date,",
+				"          temperature,",
+				"          humidity",
+				"     )) ~> SensorDevTransformed"
+			]
+		}
+	}
+}

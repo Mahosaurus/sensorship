@@ -1,0 +1,17 @@
+{
+	"name": "SensorshipPrdRaw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "PostgresConnections",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzurePostgreSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "public",
+			"table": "sensorship_prd"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

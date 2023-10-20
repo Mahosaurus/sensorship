@@ -1,0 +1,42 @@
+{
+	"name": "SensorshipDevTransformed",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "PostgresConnections",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzurePostgreSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "integer",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "date",
+				"type": "character varying",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "temperature",
+				"type": "numeric",
+				"precision": 4,
+				"scale": 2
+			},
+			{
+				"name": "humidity",
+				"type": "numeric",
+				"precision": 4,
+				"scale": 2
+			}
+		],
+		"typeProperties": {
+			"schema": "public",
+			"table": "sensorship_dev_transformed"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

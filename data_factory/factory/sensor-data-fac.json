@@ -1,0 +1,9 @@
+{
+	"name": "sensor-data-fac",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "f5cccd9f-f53d-4057-b0e2-5aad6e42d47a",
+		"tenantId": "12f921d8-f30d-4596-a652-7045b338485a"
+	}
+}
