@@ -1,5 +1,5 @@
 {
-	"name": "SensorDevTransformation",
+	"name": "SensorPrdTransformation",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
