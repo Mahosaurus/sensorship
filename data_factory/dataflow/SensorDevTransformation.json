@@ -27,7 +27,8 @@
 					"description": "1"
 				},
 				{
-					"name": "GenerateAggDate"
+					"name": "GenerateAggDate",
+					"description": "Creating/updating the column 'agg_date'"
 				},
 				{
 					"name": "Add0000ToDate"

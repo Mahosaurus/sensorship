@@ -34,7 +34,13 @@
 				}
 			],
 			"scriptLines": [
-				"source(allowSchemaDrift: false,",
+				"source(output(",
+				"          id as integer,",
+				"          date as string,",
+				"          temperature as decimal(4,2),",
+				"          humidity as decimal(4,2)",
+				"     ),",
+				"     allowSchemaDrift: false,",
 				"     validateSchema: true,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> SensorPrdRaw",
