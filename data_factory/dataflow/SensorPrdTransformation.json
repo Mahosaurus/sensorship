@@ -6,19 +6,19 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "SensorshipDevRaw",
+						"referenceName": "SensorshipPrdRaw",
 						"type": "DatasetReference"
 					},
-					"name": "SensorDevRaw"
+					"name": "SensorPrdRaw"
 				}
 			],
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "SensorshipDevTransformed",
+						"referenceName": "SensorshipPrdTransformed",
 						"type": "DatasetReference"
 					},
-					"name": "SensorDevTransformed"
+					"name": "SensorPrdTransformed"
 				}
 			],
 			"transformations": [
@@ -34,20 +34,14 @@
 				}
 			],
 			"scriptLines": [
-				"source(output(",
-				"          id as integer,",
-				"          date as string,",
-				"          temperature as decimal(4,2),",
-				"          humidity as decimal(4,2)",
-				"     ),",
-				"     allowSchemaDrift: false,",
+				"source(allowSchemaDrift: false,",
 				"     validateSchema: true,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> SensorDevRaw",
+				"     format: 'table') ~> SensorPrdRaw",
 				"GenerateAggDate aggregate(groupBy(agg_date),",
 				"     temperature = mean(temperature),",
 				"          humidity = mean(humidity)) ~> AggregateByHour",
-				"SensorDevRaw derive(agg_date = substring(date, 0, 13)) ~> GenerateAggDate",
+				"SensorPrdRaw derive(agg_date = substring(date, 0, 13)) ~> GenerateAggDate",
 				"AggregateByHour derive(agg_date = agg_date+\":00:00\") ~> Add0000ToDate",
 				"Add0000ToDate sink(allowSchemaDrift: false,",
 				"     validateSchema: true,",
@@ -69,7 +63,7 @@
 				"          date = agg_date,",
 				"          temperature,",
 				"          humidity",
-				"     )) ~> SensorDevTransformed"
+				"     )) ~> SensorPrdTransformed"
 			]
 		}
 	}
