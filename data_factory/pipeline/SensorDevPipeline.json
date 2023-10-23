@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "Dev Transformation",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
