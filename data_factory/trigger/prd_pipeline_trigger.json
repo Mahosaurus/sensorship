@@ -1,0 +1,24 @@
+{
+	"name": "prd_pipeline_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "SensorPrdPipeline",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 30,
+				"startTime": "2023-11-01T14:59:00",
+				"timeZone": "W. Europe Standard Time"
+			}
+		}
+	}
+}
