@@ -6,7 +6,7 @@ import os
 import time
 import sys
 import pandas as pd
-from src.data_storage.store_in_postgres import send_data_to_postgres, show_database, delete_database
+from data_storage.postgres_interaction import send_data_to_postgres, load_data, delete_database
 from src.data_prediction.predictor import Predictor
 
 ##############################################################################################################
@@ -31,7 +31,7 @@ if SET_UP_DATABASE_ANEW:
                               os.getenv("POSTGRES_PASSWORD"), data)
     sys.exit(0)
 
-data = show_database(os.getenv("POSTGRES_HOST"),
+data = load_data(os.getenv("POSTGRES_HOST"),
                         os.getenv("POSTGRES_DBNAME"),
                         os.getenv("POSTGRES_USER"),
                         os.getenv("POSTGRES_PASSWORD"))
@@ -46,7 +46,7 @@ impute_max_date = '2023-10-03' # The date until which we want to impute data
 # BE CAREFUL WITH THE LIMIT HERE!
 
 for i in range(1, 34):
-    data = show_database(os.getenv("POSTGRES_HOST"),
+    data = load_data(os.getenv("POSTGRES_HOST"),
                          os.getenv("POSTGRES_DBNAME"),
                          os.getenv("POSTGRES_USER"),
                          os.getenv("POSTGRES_PASSWORD"))

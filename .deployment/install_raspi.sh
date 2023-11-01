@@ -58,6 +58,7 @@ export PATH="$VIRTUAL_ENV/bin:$PATH"
 echo "export VIRTUAL_ENV=./venv_sensor" >> ${HOME}/.bash_profile
 echo 'export PATH="$VIRTUAL_ENV/bin:$PATH"' >> ${HOME}/.bash_profile
 echo 'export LINK=https://sensorndf.azurewebsites.net/sensor-data' >> ${HOME}/.bash_profile
+echo 'export DATA_RECEIVER=https://sensorndf-af-data-receiver.azurewebsites.net/api/http_trigger' >> ${HOME}/.bash_profile
 # For Local Testing: echo 'export LINK=http://127.0.0.1:5000/sensor-data' >> ${HOME}/.bash_profile
 
 # Adding bash profile to bashrc

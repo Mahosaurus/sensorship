@@ -1,5 +1,7 @@
+""" Graphics module for data visualization """
 import datetime
 import math
+import os
 
 from typing import Tuple, List
 
@@ -11,7 +13,7 @@ import pandas as pd
 
 from src.data_prediction.predictor import Predictor
 from src.utils.helpers import parse_data_points
-from src.data_handling.io_interaction import *
+from src.data_storage.postgres_interaction import PostgresInteraction
 
 class PlotSensor():
     def __init__(self, data):
@@ -106,7 +108,14 @@ class PlotSensor():
 
         return fig
 
-    def generic_plot(self, title: str, axis, variable, idx: int, time_of_day, interval_minor, interval_major):
+    def generic_plot(self,
+                     title: str,
+                     axis: Figure,
+                     variable: List[float],
+                     idx: int,
+                     time_of_day: List[str],
+                     interval_minor: int,
+                    interval_major: int):
         """ Creates generic plot """
         for label in set(time_of_day):
             x = [i if tod == label else np.nan for i, tod in zip(idx, time_of_day)]
@@ -129,8 +138,8 @@ class PlotDashboard():
     def __new__(cls, *args, **kwargs):
         """ Singleton implementation
         https://stackoverflow.com/questions/31875/is-there-a-simple-elegant-way-to-define-singletons/33201#33201
-        We need the singleton, as the main instance knows the data path, which cannot be shared with the
-        callbacks for dash (as that would require passing of server instance)
+        We need the singleton, as the main instance knows the data path, which cannot
+        be shared with the callbacks for dash (as that would require passing of server instance)
         """
         instances = cls.__dict__.get("__instances__")
         if instances is not None:
@@ -142,13 +151,18 @@ class PlotDashboard():
     def __init__(self, server=None):
         if server is not None:
             self.data_path = server.config.get("DATA_PATH")
-        self.data = read_as_pandas_from_disk(self.data_path)
+        self.postgres = PostgresInteraction(os.getenv("POSTGRES_HOST"),
+                                            os.getenv("POSTGRES_DBNAME"),
+                                            os.getenv("POSTGRES_USER"),
+                                            os.getenv("POSTGRES_PASSWORD"))
+
+        self.data = self.postgres.load_data()
         self.pred_data = None
         self.length_prediction = 0
 
     def update_data(self):
-        """ Updates with the latest data from disk """
-        self.data = read_as_pandas_from_disk(self.data_path)
+        """ Updates with the latest data from database """
+        self.data = self.postgres.load_data()
 
     def update_prediction(self):
         """ Updates prediction based on self.data """
@@ -160,7 +174,8 @@ class PlotDashboard():
         """ Concats data and prediction """
         return pd.concat([self.data, self.pred_data], ignore_index=True)
 
-    def append_to_data(self, data):
+    @staticmethod
+    def append_to_data(data):
         """ Appends and lints data """
         # Add Abs Humidity
         convert_rel_to_abs_humidity = lambda x: (6.112*math.exp((17.67*x["temperature"])/(x["temperature"] + 243.5)) * x["humidity"] * 2.1674) / (273.15+x["temperature"])
@@ -173,7 +188,6 @@ class PlotDashboard():
 
     def generate_plot(self, style: str):
         "Runs the steps to generate a generic scatter plot in plotly"
-        self.update_data()
         if len(self.data) == 0:
             return go.Figure()
 

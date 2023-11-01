@@ -36,6 +36,7 @@ class Predictor():
     @staticmethod
     def make_24hrs() -> pd.DataFrame:
         """ Create timestamps for next 24hrs from now on"""
+        # Todo: Start with latest timestamp in data!
         current_time = datetime.datetime.now()
         next_24hrs = []
         for i in range(1, 25):
@@ -57,7 +58,7 @@ class Predictor():
 
     def get_last_24hourly_avg(self, flavour) -> list:
         # Get last 24 hourly averages
-        times    = pd.DatetimeIndex(self.data.timestamp)
+        times = pd.DatetimeIndex(self.data.timestamp)
         if flavour == "temperature":
             agg_data = self.data.groupby([times.date, times.hour]).temperature.mean()
         elif flavour == "humidity":
