@@ -1,0 +1,475 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "sensor-data-fac"
+		},
+		"PostgresConnections_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'PostgresConnections'"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/SensorDevPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Dev Transformation",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SensorDevTransformation",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"SensorDevRaw": {},
+									"SensorDevTransformed": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-10-19T13:30:20Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/SensorDevTransformation')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SensorPrdPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Prd Transformation",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SensorPrdTransformation",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"SensorPrdRaw": {},
+									"SensorPrdTransformed": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/SensorPrdTransformation')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SensorshipDevRaw')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "PostgresConnections",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzurePostgreSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "integer",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "date",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "temperature",
+						"type": "numeric",
+						"precision": 4,
+						"scale": 2
+					},
+					{
+						"name": "humidity",
+						"type": "numeric",
+						"precision": 4,
+						"scale": 2
+					}
+				],
+				"typeProperties": {
+					"schema": "public",
+					"table": "sensorship_dev"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/PostgresConnections')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SensorshipDevTransformed')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "PostgresConnections",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzurePostgreSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "integer",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "date",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "temperature",
+						"type": "numeric",
+						"precision": 4,
+						"scale": 2
+					},
+					{
+						"name": "humidity",
+						"type": "numeric",
+						"precision": 4,
+						"scale": 2
+					}
+				],
+				"typeProperties": {
+					"schema": "public",
+					"table": "sensorship_dev_transformed"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/PostgresConnections')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SensorshipPrdRaw')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "PostgresConnections",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzurePostgreSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "integer",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "date",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "temperature",
+						"type": "numeric",
+						"precision": 4,
+						"scale": 2
+					},
+					{
+						"name": "humidity",
+						"type": "numeric",
+						"precision": 4,
+						"scale": 2
+					}
+				],
+				"typeProperties": {
+					"schema": "public",
+					"table": "sensorship_prd"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/PostgresConnections')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SensorshipPrdTransformed')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "PostgresConnections",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzurePostgreSqlTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "integer",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "date",
+						"type": "character varying",
+						"precision": 0,
+						"scale": 0
+					},
+					{
+						"name": "temperature",
+						"type": "numeric",
+						"precision": 4,
+						"scale": 2
+					},
+					{
+						"name": "humidity",
+						"type": "numeric",
+						"precision": 4,
+						"scale": 2
+					}
+				],
+				"typeProperties": {
+					"schema": "public",
+					"table": "sensorship_prd_transformed"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/PostgresConnections')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PostgresConnections')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzurePostgreSql",
+				"typeProperties": {
+					"connectionString": "[parameters('PostgresConnections_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SensorDevTransformation')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SensorshipDevRaw",
+								"type": "DatasetReference"
+							},
+							"name": "SensorDevRaw"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SensorshipDevTransformed",
+								"type": "DatasetReference"
+							},
+							"name": "SensorDevTransformed"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AggregateByHour",
+							"description": "1"
+						},
+						{
+							"name": "GenerateAggDate",
+							"description": "Creating/updating the column 'agg_date'"
+						},
+						{
+							"name": "Add0000ToDate"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          id as integer,",
+						"          date as string,",
+						"          temperature as decimal(4,2),",
+						"          humidity as decimal(4,2)",
+						"     ),",
+						"     allowSchemaDrift: false,",
+						"     validateSchema: true,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> SensorDevRaw",
+						"GenerateAggDate aggregate(groupBy(agg_date),",
+						"     temperature = mean(temperature),",
+						"          humidity = mean(humidity)) ~> AggregateByHour",
+						"SensorDevRaw derive(agg_date = substring(date, 0, 13)) ~> GenerateAggDate",
+						"AggregateByHour derive(agg_date = agg_date+\":00:00\") ~> Add0000ToDate",
+						"Add0000ToDate sink(allowSchemaDrift: false,",
+						"     validateSchema: true,",
+						"     input(",
+						"          id as integer,",
+						"          date as string,",
+						"          temperature as decimal(4,2),",
+						"          humidity as decimal(4,2)",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     truncate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     mapColumn(",
+						"          date = agg_date,",
+						"          temperature,",
+						"          humidity",
+						"     )) ~> SensorDevTransformed"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SensorshipDevRaw')]",
+				"[concat(variables('factoryId'), '/datasets/SensorshipDevTransformed')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SensorPrdTransformation')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SensorshipPrdRaw",
+								"type": "DatasetReference"
+							},
+							"name": "SensorPrdRaw"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SensorshipPrdTransformed",
+								"type": "DatasetReference"
+							},
+							"name": "SensorPrdTransformed"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AggregateByHour",
+							"description": "1"
+						},
+						{
+							"name": "GenerateAggDate"
+						},
+						{
+							"name": "Add0000ToDate"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          id as integer,",
+						"          date as string,",
+						"          temperature as decimal(4,2),",
+						"          humidity as decimal(4,2)",
+						"     ),",
+						"     allowSchemaDrift: false,",
+						"     validateSchema: true,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table') ~> SensorPrdRaw",
+						"GenerateAggDate aggregate(groupBy(agg_date),",
+						"     temperature = mean(temperature),",
+						"          humidity = mean(humidity)) ~> AggregateByHour",
+						"SensorPrdRaw derive(agg_date = substring(date, 0, 13)) ~> GenerateAggDate",
+						"AggregateByHour derive(agg_date = agg_date+\":00:00\") ~> Add0000ToDate",
+						"Add0000ToDate sink(allowSchemaDrift: false,",
+						"     validateSchema: true,",
+						"     input(",
+						"          id as integer,",
+						"          date as string,",
+						"          temperature as decimal(4,2),",
+						"          humidity as decimal(4,2)",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     truncate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     mapColumn(",
+						"          date = agg_date,",
+						"          temperature,",
+						"          humidity",
+						"     )) ~> SensorPrdTransformed"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SensorshipPrdRaw')]",
+				"[concat(variables('factoryId'), '/datasets/SensorshipPrdTransformed')]"
+			]
+		}
+	]
+}
