@@ -19,7 +19,10 @@ def send_to_app(out_str):
     try:
         dict_to_send = {"data": out_str}
         dict_to_send['secret_key'] = os.environ.get("SECRET_KEY")
+        print("Sending to old instance")
         res = requests.put(os.environ['LINK'], json=dict_to_send, verify=True)
+        print("Sending to function app")
+        res = requests.post(os.environ['DATA_RECEIVER'], json=dict_to_send, verify=True)
         print(time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), ":", res, res.text)
     except Exception as exc:
         print(f"Error in sending metrics to App: {exc}")
@@ -36,7 +39,7 @@ app = Flask(__name__)
 
 if __name__ == "__main__":
     sched = BackgroundScheduler(daemon=True)
-    sched.add_job(main, 'interval', seconds=60*60)
+    sched.add_job(main, 'interval', seconds=5)
     sched.start()
     # Debug Mode False, as otherwise there will be two instances of the scheduler
     app.run(host="localhost", port=8000, debug=False)

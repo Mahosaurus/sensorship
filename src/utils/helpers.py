@@ -17,6 +17,7 @@ def compile_data_point(timestamp: int, temperature: str, humidity: str) -> str:
     return out_str
 
 def parse_data_points(data: str) -> Tuple[List[str], List[float], List[float]]:
+    """ Parse data points from text file """
     data = data.split("\n")[:-1]
     timestamp = [val.split(",")[0] for val in data] # Extract values
     temperature = [float(val.split(",")[1]) for val in data] # Extract values
@@ -32,6 +33,7 @@ def get_repo_root() -> str:
     return path_to_this_file
 
 def parse_data_for_ml(data):
+    """ Convert data to numeric and datetime """
     # Convert temp and humid to numeric
     data["temperature"] = data["temperature"].astype(float)
     data["humidity"] = data["humidity"].astype(float)
