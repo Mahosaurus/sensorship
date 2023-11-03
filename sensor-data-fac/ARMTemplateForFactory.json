@@ -96,7 +96,10 @@
 								"coreCount": 8,
 								"computeType": "General"
 							},
-							"traceLevel": "Fine"
+							"traceLevel": "Fine",
+							"continuationSettings": {
+								"customizedCheckpointKey": "7cd55666-99e5-4775-96c8-87abeef7e6ac"
+							}
 						}
 					}
 				],
@@ -467,6 +470,10 @@
 						"     ),",
 						"     allowSchemaDrift: false,",
 						"     validateSchema: true,",
+						"     enableCdc: true,",
+						"     mode: 'read',",
+						"     skipInitialLoad: false,",
+						"     waterMarkColumn: 'id',",
 						"     isolationLevel: 'READ_UNCOMMITTED',",
 						"     format: 'table') ~> SensorPrdRaw",
 						"GenerateAggDate aggregate(groupBy(agg_date),",
