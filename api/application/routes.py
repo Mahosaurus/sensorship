@@ -12,10 +12,11 @@ from src.data_prediction.predictor import Predictor
 from src.data_handling.io_interaction import pandas_to_str
 from src.data_storage.postgres_interaction import PostgresInteraction
 
-postgres = PostgresInteraction(os.getenv("POSTGRES_HOST"),
-                               os.getenv("POSTGRES_DBNAME"),
-                               os.getenv("POSTGRES_USER"),
-                               os.getenv("POSTGRES_PASSWORD"))
+postgres = PostgresInteraction(app.config["POSTGRES_HOST"],
+                               app.config["POSTGRES_DBNAME"],
+                               app.config["POSTGRES_USER"],
+                               app.config["POSTGRES_PASSWORD"],
+                               app.config["POSTGRES_TABLE"])
 
 @app.route("/")
 def home():
@@ -26,16 +27,6 @@ def home():
         template="home-template",
         body="Entry page for room condition dashboard",
     )
-
-@app.route('/sensor-data', methods=['PUT'])
-def get_data():
-    """Receives data from sensor and writes it to disk."""
-    if request.method == 'PUT':
-        data = request.json
-        if data['secret_key'] == app.config["SECRET_KEY"]:
-            postgres.send_data_to_postgres(data)
-            return f"Received {data}"
-    return f"Received {data}, could not process using {data['secret_key']}"
 
 @app.route("/show-data")
 def plot_png():
