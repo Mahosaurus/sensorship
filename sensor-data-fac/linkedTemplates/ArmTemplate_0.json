@@ -342,12 +342,10 @@
 						"     ),",
 						"     allowSchemaDrift: false,",
 						"     validateSchema: true,",
-						"     enableCdc: true,",
-						"     mode: 'read',",
-						"     skipInitialLoad: false,",
 						"     waterMarkColumn: 'id',",
 						"     isolationLevel: 'READ_UNCOMMITTED',",
-						"     format: 'table') ~> SensorPrdRaw",
+						"     format: 'table',",
+						"     mode: 'read') ~> SensorPrdRaw",
 						"GenerateAggDate aggregate(groupBy(agg_date),",
 						"     temperature = mean(temperature),",
 						"          humidity = mean(humidity)) ~> AggregateByHour",
@@ -365,6 +363,7 @@
 						"     insertable:true,",
 						"     updateable:false,",
 						"     upsertable:false,",
+						"     truncate:true,",
 						"     format: 'table',",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
@@ -461,10 +460,7 @@
 								"coreCount": 8,
 								"computeType": "General"
 							},
-							"traceLevel": "Fine",
-							"continuationSettings": {
-								"customizedCheckpointKey": "4ca67aa8-1c7b-49d5-a132-561e0f570ae6"
-							}
+							"traceLevel": "Fine"
 						}
 					}
 				],
