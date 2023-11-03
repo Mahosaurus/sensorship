@@ -365,7 +365,6 @@
 						"     insertable:true,",
 						"     updateable:false,",
 						"     upsertable:false,",
-						"     truncate:true,",
 						"     format: 'table',",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
@@ -464,7 +463,7 @@
 							},
 							"traceLevel": "Fine",
 							"continuationSettings": {
-								"customizedCheckpointKey": "7cd55666-99e5-4775-96c8-87abeef7e6ac"
+								"customizedCheckpointKey": "4ca67aa8-1c7b-49d5-a132-561e0f570ae6"
 							}
 						}
 					}
